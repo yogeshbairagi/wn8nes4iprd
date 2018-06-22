@@ -1,0 +1,51 @@
+<div id="myModal" class="modal fade" role="dialog">
+    <div class="modal__dialog" role="document">
+          <div class="modal__content">
+                <a href="guest.html" class="modal__close" data-dismiss="modal">
+                      <span class="icon-close"></span>
+                </a>
+                <div class="modal__header">
+                      <div class="icon-cisco text-blue text-huge"></div>
+                      <br>
+                      <h4 class="modal__title">GP&F Analytics Dashboard</h4>
+                      <br>
+                      <!-- <h4 class="modal__title">GP&F Dashboard Page</h4> -->
+                </div>
+                <!-- <div class="modal__body">
+                      <p>Please enter your CEC ID (E.g. abc@cisco.com)</p>
+                </div> -->
+                <form #userlogin="ngForm" (ngSubmit)="logIn(userlogin.value)">
+                      <label for="uname" class="username-label" tabindex=1 data-text="Cisco_Login_Local_Content_User_Name">CEC ID</label>
+                      &nbsp;
+                      <input type="text" name="uname" placeholder="abc@cisco.com" required ngModel>&nbsp;
+                      <font color="red">
+                            <span class="icon-asterisk"></span>
+                      </font>
+                      <br>
+                      <br>
+                      <br>
+                      <button type="submit" class="btn btn--primary" data-dismiss="modal">Submit</button>
+                      <br>
+                      <br>
+                      <font color="red">
+                            <b>
+                                  <span *ngIf="isPending">User request pending. Please contact your manager.</span>
+                                  <span *ngIf="isFailed">User doesn't exist. Please signup to use the dashboard.</span>
+                            </b>
+                      </font>
+                      <br>
+                      <br>
+                      <a href="guest.html" style="float:left">Guest User</a>
+                      <a routerLink="/signup" style="float:right">Sign up</a>
+                </form>
+          </div>
+
+          <br>
+          <div class="modal__footer">
+          </div>
+          <div class="footer__close">
+                <!-- <p>or</p>
+                <a href="guest.html">Log in as Guest User</a> -->
+          </div>
+    </div>
+</div>

@@ -1,0 +1,63 @@
+<div id="myModal" class="modal fade" role="dialog">
+  <div class="modal__dialog" role="document">
+    <div class="modal__content">
+      <a routerLink="/" class="modal__close" data-dismiss="modal">
+        <span class="icon-close"></span>
+      </a>
+      <div class="modal__header">
+        <div class="icon-cisco text-blue text-huge"></div>
+        <br>
+        <h4 class="modal__title">GP&F Analytics Dashboard</h4>
+        <br>
+        <!-- <h4>Sign up Page</h4> -->
+        <!-- <h4 class="modal__title">Sign up Page</h4> -->
+      </div>
+      <!-- <div class="modal__body">
+        <p>Please enter the following details:</p>
+      </div> -->
+      <form #signup="ngForm" (ngSubmit)="userSignup(signup.value)">
+        <label for="fname" class="username-label" tabindex=1 data-text="Cisco_Login_Local_Content_User_Name">First Name</label>
+        &nbsp;
+        <input type="text" name="fname" required ngModel>&nbsp;
+        <font color="red">
+          <span class="icon-asterisk"></span>
+        </font>
+        <br>
+        <br>
+        <label for="lname" class="username-label" tabindex=1 data-text="Cisco_Login_Local_Content_User_Name">Last Name</label>
+        &nbsp;
+        <input type="text" name="lname" required ngModel>&nbsp;
+        <font color="red">
+          <span class="icon-asterisk"></span>
+        </font>
+        <br>
+        <br>
+        <label for="uname" class="username-label" tabindex=1 data-text="Cisco_Login_Local_Content_User_Name">CEC Email</label>
+        &nbsp;
+        <input type="text" name="uname" required ngModel>&nbsp;
+        <font color="red">
+          <span class="icon-asterisk"></span>
+        </font>
+        <br>
+        <br>
+        <button type="submit" class="btn btn--primary" data-dismiss="modal">Submit</button>
+        <br>
+        <br>
+        <font color="red">
+          <b>
+            <span *ngIf="isUpdated">Signup Successful. Please send an email to your manager for approval.</span>
+            <span *ngIf="isNotUpdated">User ID already exists or Server unavailable.</span>
+          </b>
+        </font>
+        <br>
+        <br>
+        <a routerLink="/" style="float:center">Go back to Login Page</a>
+      </form>
+      <br>
+      <div class="modal__footer">
+      </div>
+      <div class="footer__close">
+      </div>
+    </div>
+  </div>
+</div>
