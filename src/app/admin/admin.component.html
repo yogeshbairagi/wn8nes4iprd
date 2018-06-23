@@ -5,6 +5,7 @@
       <div>
         <span class="icon-contact icon--large"></span>
       </div>
+      <div><b>{{userFname}}</b></div>
     </div>
     <ul>
       <li class="sidebar__item">
@@ -34,55 +35,32 @@
     </ul>
   </div>
   <main>
-    <header class="header">
+    <header class="header header--tall">
       <div class="header-bar container">
         <a href="http://www.cisco.com" class="header-bar__logo">
           <span class="icon-cisco"></span>
         </a>
         <div class="header-bar__main">
           <div class="header-heading">
-            <h1>
-              <b class="page-title">GP&F Landing Page</b>
-            </h1>
+            <p class="page-title">GP&F Landing Page</p>
           </div>
         </div>
-        <div class="header-bar__main">
-          <div class="header-toolbar">
-            <p> </p>
-          </div>
-          <div class="header-toolbar">
-            <p> </p>
-          </div>
-          <!-- <div class="header-toolbar">
-            <div class="col-md-6">
-              <div class="form-group">
-                <div class="form-group__text select">
-                  <select id="access" onchange="onChangeAccess(this)">
-                    <option value="" selected>Access Related Links</option>
-                    <option value="https://edsart.cloudapps.cisco.com/groups/28/subgroups">DLS Access</option>
-                    <option value="https://edsart.cloudapps.cisco.com/groups/-1/subgroups">Dashboard Access</option>
-                    <option value="https://tableau.cisco.com/#/site/GPF/views/GPF-DLS-LOOKUP/GPF-DLS?:iid=5">DLS access I have</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-          </div> -->
-          <div class="header-toolbar">
-            <div class="col-md-6">
-              <button class="btn btn--primary" id="modal-add-dashboard" (click)="onDashboardClick()">Go to Dashboard</button>
-            </div>
-            <div style="float: right">
-              <a [routerLink]="" (click)="userLogOff()">
-                <b>
-                  <span class="icon-sign-out"></span> Log Out</b>
-              </a>
-            </div>
-          </div>
+
+        <div class="header-toolbar">
+            <a routerLink="/dashboard" class="btn btn--icon">
+                <span class="icon-home" title="Go to Home Page"></span>
+            </a>
+            <a [routerLink]="" (click)="userLogOff()" class="btn btn--icon">
+                <span class="icon-sign-out" title="Log Out"></span>
+            </a>
+            <!-- <a href="javascript:;" class="btn btn--icon">
+                <span class="icon-cog"></span>
+            </a> -->
         </div>
       </div>
     </header>
     <div class="content">
-      <div class="container" style="width: 60%;margin: 0 auto;">
+      <div class="container">
         <router-outlet></router-outlet>
       </div>
     </div>

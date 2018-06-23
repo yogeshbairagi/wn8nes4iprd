@@ -11839,7 +11839,7 @@ body.cui {
     margin-right: auto;
     font-size: 2.4rem;
     font-weight: 100;
-    line-height: 1;
+    line-height: 1.5; /* Changed from 1 to 1.5 fro IE compatibility*/
     margin-top: 3px;
     margin-left: 0;
     font-size: 24px;
@@ -12533,7 +12533,7 @@ body.cui {
 .cui .sidebar__header,
 .cui .sidebar-header {
   /* padding: 15px; standard code */
-  padding: 7.7px;
+  padding: 7px;
   text-align: center; }
   .cui .sidebar__header a:hover,
   .cui .sidebar-header a:hover {

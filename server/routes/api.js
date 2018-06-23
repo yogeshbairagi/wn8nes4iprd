@@ -69,7 +69,21 @@ router.get('/dashboards/:catId/:status', (req, res) => {
     var catId = parseInt(req.params.catId);
     var status = req.params.status;
     var sql;
-    if (catId == 1) {
+
+    if(catId == 0)
+    {
+        sql = "SELECT * FROM dashboard WHERE status = ?";
+
+        connection.query(sql, [status], function (err, result) {
+            if (err) {
+                sendError(err, res);
+            }
+            else {
+                sendResponse(result, res);
+            }
+        });
+    }
+    else if (catId == 1) {
         sql = "SELECT dashboard.dashId, dashboard.dashname, dashboard.dashdesc, dashboard.imguri, dashboard.dashlink, dashboard.status, dashboard.catId, dashboard.age, dashboard.views, dashboard.unique_users, favorite.userId FROM dashboard INNER JOIN favorite ON dashboard.dashId = favorite.dashId WHERE status = ?";
 
         connection.query(sql, [status], function (err, result) {

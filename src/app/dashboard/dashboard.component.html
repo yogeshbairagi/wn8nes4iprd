@@ -5,6 +5,9 @@
       <div>
         <span class="icon-contact icon--large"></span>
       </div>
+      <div>
+        <b>{{userFname}}</b>
+      </div>
     </div>
     <ul>
       <li class="sidebar__item" *ngFor="let item of categoriesList">
@@ -12,7 +15,7 @@
       </li>
     </ul>
 
-    <br>
+    <!-- <br>
     <div class="form-group">
       <div>
         <select id="access" onchange="onChangeAccess(this)" style="width: 95%">
@@ -73,10 +76,10 @@
           <option value="#VOR_BOM_Accuracy">VOR BOM Volatility</option>
         </select>
       </div>
-    </div>
+    </div> -->
   </div>
   <main>
-    <header class="header">
+    <header class="header header--tall">
       <div class="header-bar container">
         <a href="http://www.cisco.com" class="header-bar__logo">
           <!-- <span class="icon-home"></span> -->
@@ -84,12 +87,47 @@
         </a>
         <div class="header-bar__main">
           <div class="header-heading">
-            <h1>
-              <b class="page-title">GP&F Landing Page</b>
-            </h1>
+            <p class="page-title">GP&F Landing Page</p>
+          </div>
+
+          <div class="header-menus">
+            <ul class="nav nav-tabs">
+              <li id="tab-dashboards" class="tab active" (click)="onDashboardTabClick($event)">
+                <a tabindex="10">
+                  <div class="tab__heading" title="Dashboards">Dashboards</div>
+                </a>
+              </li>
+              <li id="tab-reports" class="tab" (click)="onDashboardTabClick($event)">
+                <a tabindex="11">
+                  <div class="tab__heading" title="Reports">Reports</div>
+                </a>
+              </li>
+              <li id="tab-tools" class="tab" (click)="onDashboardTabClick($event)">
+                <a tabindex="12">
+                  <div class="tab__heading" title="Tools">Tools</div>
+                </a>
+              </li>
+              <li id="tab-training" class="tab" (click)="onDashboardTabClick($event)">
+                <a tabindex="12">
+                  <div class="tab__heading" title="Training">Training</div>
+                </a>
+              </li>
+            </ul>
           </div>
         </div>
-        <div class="header-bar__main">
+
+        <div class="header-toolbar">
+          <a routerLink="/admin" class="btn btn--icon">
+            <span class="icon-admin" title="Admin Activities"></span>
+          </a>
+          <a [routerLink]="" (click)="userLogOff()" class="btn btn--icon">
+            <span class="icon-sign-out" title="Log Out"></span>
+          </a>
+          <!-- <a href="javascript:;" class="btn btn--icon">
+                <span class="icon-cog"></span>
+            </a> -->
+        </div>
+        <!-- <div class="header-bar__main">
           <div class="header-toolbar">
             <p> </p>
           </div>
@@ -107,71 +145,269 @@
               </a>
             </div>
           </div>
-        </div>
+        </div> -->
       </div>
     </header>
+
     <div class="content">
       <div class="container">
-        <div class="section">
-          <div id="{{catId}}">
-            <br>
-            <h4>{{catDesc}}</h4>
-            <!-- <p>Requires the Standard Package</p> -->
-            <div class="row base-margin-top">
-              <div *ngFor="let item of dashboardList" id="{{item.dashId}}" class="col-md-3 text-center card">
-                <a href="{{item.dashlink}}" target="_blank">
-                  <img src="{{item.imguri}}" class="image">
-                </a>
-                <div class="card_container">
-                  <p align="left">
-                    <span class="icon-eye"></span>{{item.views}} :
-                    <span class="icon-contact"></span>{{item.unique_users}} : {{item.age}} mon ago</p>
-                  <b>
-                    <font color=#049fd9>{{item.dashname}}</font>
-                  </b>
-                  <a href="{{item.dashlink}}" target="_blank">
-                    <div class="overlay">
-                      <p>
-                        <font color="#049fd9"></font>{{item.dashdesc}}</p>
-                      <p></p>
+
+        <div class="secondary-tabs">
+          <!-- <ul class="tabs">
+            <li id="tab-dashboards" class="tab active" (click)="onDashboardTabClick($event)">
+              <a tabindex="10">
+                <div class="tab__heading" title="Routers" style="margin-top: 10px;">Dashboards</div>
+              </a>
+            </li>
+            <li id="tab-links" class="tab" (click)="onDashboardTabClick($event)">
+              <a tabindex="11">
+                <div class="tab__heading" title="Switches" style="margin-top: 10px;">Links</div>
+              </a>
+            </li>
+            <li id="tab-training" class="tab" (click)="onDashboardTabClick($event)">
+              <a tabindex="12">
+                <div class="tab__heading" title="Wireless" style="margin-top: 10px;">Training</div>
+              </a>
+            </li>
+          </ul> -->
+          <div class="tab-content">
+            <div id="tab-dashboards-content" class="tab-pane active">
+
+              <!-- <div class="content">
+            <div class="container"> -->
+              <div class="section">
+                <div id="{{catId}}">
+                  <h4>{{catDesc}}</h4>
+                  <!-- <p>Requires the Standard Package</p> -->
+                  <div class="row base-margin-top">
+                    <div *ngFor="let item of dashboardList" id="{{item.dashId}}" class="col-md-3 text-center card">
+                      <a href="{{item.dashlink}}" target="_blank">
+                        <img src="{{item.imguri}}" class="image">
+                      </a>
+                      <div class="card_container">
+                        <p align="left">
+                          <span class="icon-eye"></span>{{item.views}} :
+                          <span class="icon-contact"></span>{{item.unique_users}} : {{item.age}} mon ago</p>
+                        <b>
+                          <font color=#049fd9>{{item.dashname}}</font>
+                        </b>
+                        <a href="{{item.dashlink}}" target="_blank">
+                          <div class="overlay">
+                            <p>
+                              <font color="#049fd9"></font>{{item.dashdesc}}</p>
+                            <p></p>
+                          </div>
+                        </a>
+                      </div>
+                      <div>
+                        <!-- <a href="" align="left">
+                          <span class="icon-info-circle"></span>
+                        </a>
+                        <a href="">
+                          <font color="#049fd9">
+                            <span class="icon-video"></span>
+                          </font>
+                        </a> -->
+
+                        <a *ngIf="item.userId == null;" [routerLink]="" (click)="onAddFavoriteClick(item)">
+                          <font color="green">
+                            <span class="icon-star-empty"></span>
+                          </font>
+                        </a>
+
+                        <a *ngIf="item.userId != null;" [routerLink]="" (click)="onRemoveFavoriteClick(item)">
+                          <font color="green">
+                            <span class="icon-star"></span>
+                          </font>
+                        </a>
+
+                        <!-- &nbsp;&nbsp;&nbsp;
+                        <a href="" align="right">
+                          <font color="red">
+                            <span class="icon-remove-outline"></span>
+                          </font>
+                        </a> -->
+                      </div>
                     </div>
-                  </a>
-                </div>
-                <div>
-                  <!-- <a href="" align="left">
-                    <span class="icon-info-circle"></span>
-                  </a>
-                  <a href="">
-                    <font color="#049fd9">
-                      <span class="icon-video"></span>
-                    </font>
-                  </a> -->
-
-                  <a *ngIf="item.userId == null;" [routerLink]="" (click)="onAddFavoriteClick(item)">
-                    <font color="green">
-                      <span class="icon-star-empty"></span>
-                    </font>
-                  </a>
-
-                  <a *ngIf="item.userId != null;" [routerLink]="" (click)="onRemoveFavoriteClick(item)">
-                      <font color="green">
-                        <span class="icon-star"></span>
-                      </font>
-                  </a>
-                  
-                  <!-- &nbsp;&nbsp;&nbsp;
-                  <a href="" align="right">
-                    <font color="red">
-                      <span class="icon-remove-outline"></span>
-                    </font>
-                  </a> -->
+                  </div>
                 </div>
               </div>
+              <!-- </div>
+          </div> -->
             </div>
+
+            <div id="tab-reports-content" class="tab-pane">
+              <!-- <div class="content">
+                    <div class="container" style="width: 85%;margin: 0 auto;">
+                      <br> -->
+              <div class="responsive-table">
+                <table class="table table--fixed">
+                  <thead>
+                    <tr>
+                      <th>Reports</th>
+                      <th>Tools</th>
+                      <th>Training</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <a href="https://cisco.jiveon.com/docs/DOC-1820739" target="_blank">CSP Delta Report</a>
+                      </td>
+                      <td>
+                        <a href="https://cisco.jiveon.com/external-link.jspa?url=https://cisco.e2open.com/" target="_blank">SCP</a>
+                      </td>
+                      <td>
+                        <a href="https://cisco.jiveon.com/external-link.jspa?url=http://ciscodocs.cisco.com/ciscodocs/listFolder?action=listFolder&folderId=0b0dcae182b331e0&folderTitle=Demand%2bPlanning%2bShared%2bDocuments"
+                          target="_blank">DP Job Aid</a>
+                      </td>
+
+                    </tr>
+                    <tr>
+                      <td>
+                        <a href="https://mfplp3.cloudapps.cisco.com/sc-apps/mfplp3/FDMTReport/FDMT" target="_blank">FDMT Report</a>
+                      </td>
+                      <td>
+                        <a href="https://bi4cisco.cisco.com/BOE/BI" target="_blank">SCSU</a>
+                      </td>
+                      <td>
+                        <a href="http://ciscodocs.cisco.com/ciscodocs/listFolder?action=listFolder&folderId=0b0dcae187011409&folderTitle=FY18&rootFolderId=0b0dcae183d1717b&parentFolderId=0b0dcae183d1717b&parentFolderTitle=NMS&showArchive=false"
+                          target="_blank">E&O Provision File</a>
+                      </td>
+
+                    </tr>
+                    <tr>
+                      <td>
+                        <a href="https://tableau.cisco.com/#/site/GPF/views/OpportunityDealDashboard/BOMIndexSummary" target="_blank">Deal Tracking Dashboard</a>
+                      </td>
+                      <td>
+                        <a href="http://cot-sjc-002-p/_prism/_home/" target="_blank">Prism</a>
+                      </td>
+                      <td>
+                        <a href="http://ciscodocs.cisco.com/ciscodocs/listFolder?action=listFolder&folderId=0b0dcae182bd55d6&folderTitle=Training%2B-%2BDemand%2BPlanning"
+                          target="_blank">Archived Demand Planning Training</a>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <a href="https://tableau.cisco.com/#/site/GPF/views/OpportunityDealDashboard/BOMIndexSummary" target="_blank">Demand Drop Analysis</a>
+                      </td>
+                      <td>
+                        <a href="https://dmx-web-002-p/rapidresponse/" target="_blank">Kinaxis</a>
+                      </td>
+                      <td>
+                        <a href="http://ciscodocs.cisco.com/ciscodocs/listFolder?action=listFolder&folderId=0b0dcae185b81930&folderTitle=IBP%2bTraining%2b-%2bQ1%2b%2526%2bQ2%2bFY15&rootFolderId=0b0dcae182b331e0&parentFolderId=0b0dcae182b331e0&parentFolderTitle=Demand%2bPlanning%2bShared%2bDocuments&showArchive=false"
+                          target="_blank">Current IBP Training Folder</a>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <a href="https://mfginv.cloudapps.cisco.com/sc-apps/mfginv/invsnap/ENOInvSnapshotForm" target="_blank">Inventory Snapshot</a>
+                      </td>
+                      <td>
+                        <a href="https://inbiz.cloudapps.cisco.com/sc-apps/inbiz/inbiz/Home" target="_blank">InBiz</a>
+                      </td>
+                      <td>
+                        <a href="http://ciscodocs.cisco.com/ciscodocs/listFolder?action=listFolder&folderId=0b0dcae1869ac299&folderTitle=IBP%2bNew%2bHire%2bGuide"
+                          target="_blank">Guide for New IBPs</a>
+                      </td>
+
+                    </tr>
+                    <tr>
+                      <td>
+                        <a href="http://ciscodocs.cisco.com/ciscodocs/listFolder?action=listFolder&folderId=0b0dcae184cae857&folderTitle=Karen%2bAshley&rootFolderId=0b0dcae180f9bd16&parentFolderId=0b0dcae180f9bd16&parentFolderTitle=NMS%2bReports&showArchive=false"
+                          target="_blank">NMS Reports</a>
+                      </td>
+                      <td>
+                        <a href="http://wwwin-webapps.cisco.com/emco/dp/portal/loginpage.jsp" target="_blank">Demantra Login</a>
+                      </td>
+                      <td>
+                        <a href="https://cisco.jiveon.com/docs/DOC-1809088" target="_blank">S&OP Playbook</a>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td></td>
+                      <td>
+                        <a href="http://wwwin-webapps.cisco.com/emco/dp/portal/userManagement.jsp" target="_blank">Demantra User Management</a>
+                      </td>
+                      <td>
+                        <a href="https://cisco.jiveon.com/external-link.jspa?url=http://ciscodocs.cisco.com/ciscodocs/listFolder?action=listFolder&folderId=0b0dcae181432469&folderTitle=S%2526OP%2bPlanner%2bTraining&rootFolderId=0b0dcae18024ff93&parentFolderId=0b0dcae18043022e&parentFolderTitle=Sales%2band%2bOperations%2bPlanning"
+                          target="_blank">S&OP Training</a>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td></td>
+                      <td>
+                        <a href="https://cisco.jiveon.com/external-link.jspa?url=http://ciscodocs.cisco.com/ciscodocs/listFolder?action=listFolder&folderId=0b0dcae1831774e0&folderTitle=CBP%2bTemplate%2bTool&rootFolderId=0b0dcae1805b6828&parentFolderId=0b0dcae182b331e0&parentFolderTitle=Service%2bProvider%2bShared%2bDocuments"
+                          target="_blank">CBP Template Tool</a>
+                      </td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td></td>
+                      <td>
+                        <a href="https://cisco.jiveon.com/external-link.jspa?url=http://ciscodocs.cisco.com/ciscodocs/listFolder?action=listFolder&folderId=0b0dcae18387f9de&folderTitle=CDO-CBP%2bRevenue%2band%2bCost%2bDelta%2bTracker&rootFolderId=0b0dcae182b331e0&parentFolderId=0b0dcae182b331e0&parentFolderTitle=Service%2bProvider%2bShared%2bDocuments"
+                          target="_blank">CBP Tracker Tool</a>
+                      </td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td></td>
+                      <td>
+                        <a href="https://cisco.jiveon.com/docs/DOC-1557615" target="_blank">Component LTB Template</a>
+                      </td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td></td>
+                      <td>
+                        <a href="http://ciscodocs.cisco.com/ciscodocs/listFolder?action=listFolder&folderId=0b0dcae1868d15af&folderTitle=E%2526O%2bRECON%2bANALYZER"
+                          target="_blank">E&O Recon Analyzer</a>
+                      </td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td></td>
+                      <td>
+                        <a href="http://wwwin-eol.cisco.com/eol/" target="_blank">EoL Solution Center</a>
+                      </td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td></td>
+                      <td>
+                        <a href="https://mfplp2.cloudapps.cisco.com/sc-apps/mfplp2/planner/DPDEMMANTRAVIEW" target="_blank">FDM</a>
+                      </td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td></td>
+                      <td>
+                        <a href="https://docs.cisco.com/" target="_blank">Doc Central</a>
+                      </td>
+                      <td></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <!-- </div>
+                  </div> -->
+            </div>
+
+            <div id="tab-tools-content" class="tab-pane">
+              <h1>tab 3</h1>
+            </div>
+
+            <div id="tab-training-content" class="tab-pane">
+              <h1>tab 4</h1>
+            </div>
+
           </div>
         </div>
+
       </div>
     </div>
+
     <footer class="footer footer--new footer--basic footer--compressed">
       <div class="footer__links">
         <ul class="list">
@@ -198,3 +434,4 @@
       </div>
     </footer>
   </main>
+</div>

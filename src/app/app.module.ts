@@ -15,6 +15,7 @@ import { SignupComponent } from './signup/signup.component';
 import { AuthGuard } from './auth.guard';
 import { AdminComponent } from './admin/admin.component';
 import { AdddashboardComponent } from './adddashboard/adddashboard.component';
+import { ApprovedashboardComponent } from './approvedashboard/approvedashboard.component';
 
 const appRoutes: Routes = [
   {
@@ -24,7 +25,18 @@ const appRoutes: Routes = [
   {
     path: 'dashboard',
     canActivate: [AuthGuard],
-    component: DashboardComponent
+    component: DashboardComponent,
+    children: [
+      {
+        path: 'links',
+        component: AdddashboardComponent,
+        outlet: 'link'
+      },
+      {
+        path: 'training',
+        component: AdddashboardComponent
+      }
+    ]
   },
   {
     path: 'admin',
@@ -33,7 +45,7 @@ const appRoutes: Routes = [
     children: [
       {
         path: '',
-        component: AdddashboardComponent
+        component: ApprovedashboardComponent
       },
       {
         path: 'adddashboard',
@@ -54,7 +66,8 @@ const appRoutes: Routes = [
     LoginComponent,
     SignupComponent,
     AdminComponent,
-    AdddashboardComponent
+    AdddashboardComponent,
+    ApprovedashboardComponent
   ],
   imports: [
     BrowserModule,

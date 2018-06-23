@@ -8,13 +8,12 @@ import { Router } from "@angular/router";
 })
 export class AdminComponent implements OnInit {
 
+  userFname: string = null;
+
   constructor(private _router: Router) { }
 
   ngOnInit() {
-  }
-
-  onDashboardClick() {
-    this._router.navigate(["dashboard"]);
+    this.userFname = sessionStorage.fname;
   }
 
   userLogOff()
