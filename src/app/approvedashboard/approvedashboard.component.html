@@ -1,0 +1,57 @@
+<div class="section">
+    <div>
+      <h4>List of Dashboard's Add requests</h4>
+      <!-- <p>Requires the Standard Package</p> -->
+      <div class="row base-margin-top">
+        <div *ngFor="let item of dashboardList" id="{{item.dashId}}" class="col-md-3 text-center card">
+          <a href="{{item.dashlink}}" target="_blank">
+            <img src="{{item.imguri}}" class="image">
+          </a>
+          <div class="card_container">
+            <p align="left">
+              <span class="icon-eye"></span>{{item.views}} :
+              <span class="icon-contact"></span>{{item.unique_users}} : {{item.age}} mon ago</p>
+            <b>
+              <font color=#049fd9>{{item.dashname}}</font>
+            </b>
+            <a href="{{item.dashlink}}" target="_blank">
+              <div class="overlay">
+                <p>
+                  <font color="#049fd9"></font>{{item.dashdesc}}</p>
+                <p></p>
+              </div>
+            </a>
+          </div>
+          <div>
+            <!-- <a href="" align="left">
+              <span class="icon-info-circle"></span>
+            </a>
+            <a href="">
+              <font color="#049fd9">
+                <span class="icon-video"></span>
+              </font>
+            </a> -->
+
+            <a [routerLink]="" (click)="onApproveClick(item)">
+              <font color="green">
+                <span class="icon-check icon--medium"></span>
+              </font>
+            </a>
+            &nbsp;&nbsp;&nbsp;
+            <a [routerLink]="" (click)="onRejectClick(item)">
+              <font color="red">
+                <span class="icon-close icon--medium"></span>
+              </font>
+            </a>
+
+            <!-- &nbsp;&nbsp;&nbsp;
+            <a href="" align="right">
+              <font color="red">
+                <span class="icon-remove-outline"></span>
+              </font>
+            </a> -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
