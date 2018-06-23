@@ -64,10 +64,11 @@ router.get('/categories/:purpose', (req, res) => {
 });
 
 //Get Dashboards
-router.get('/dashboards/:catId/:status', (req, res) => {
+router.get('/dashboards/:catId/:status/:userId', (req, res) => {
 
     var catId = parseInt(req.params.catId);
     var status = req.params.status;
+    var userId = req.params.userId;
     var sql;
 
     if(catId == 0)
@@ -84,9 +85,9 @@ router.get('/dashboards/:catId/:status', (req, res) => {
         });
     }
     else if (catId == 1) {
-        sql = "SELECT dashboard.dashId, dashboard.dashname, dashboard.dashdesc, dashboard.imguri, dashboard.dashlink, dashboard.status, dashboard.catId, dashboard.age, dashboard.views, dashboard.unique_users, favorite.userId FROM dashboard INNER JOIN favorite ON dashboard.dashId = favorite.dashId WHERE status = ?";
+        sql = "SELECT dashboard.dashId, dashboard.dashname, dashboard.dashdesc, dashboard.imguri, dashboard.dashlink, dashboard.status, dashboard.catId, dashboard.age, dashboard.views, dashboard.unique_users, favorite.userId FROM dashboard INNER JOIN favorite ON dashboard.dashId = favorite.dashId WHERE status = ? AND userId = ?";
 
-        connection.query(sql, [status], function (err, result) {
+        connection.query(sql, [status, userId], function (err, result) {
             if (err) {
                 sendError(err, res);
             }
@@ -96,9 +97,9 @@ router.get('/dashboards/:catId/:status', (req, res) => {
         });
     }
     else {
-        sql = "SELECT dashboard.dashId, dashboard.dashname, dashboard.dashdesc, dashboard.imguri, dashboard.dashlink, dashboard.status, dashboard.catId, dashboard.age, dashboard.views, dashboard.unique_users, favorite.userId FROM dashboard LEFT JOIN favorite ON dashboard.dashId = favorite.dashId WHERE catId = ? AND status = ?";
-
-        connection.query(sql, [catId, status], function (err, result) {
+        //sql = "SELECT dashboard.dashId, dashboard.dashname, dashboard.dashdesc, dashboard.imguri, dashboard.dashlink, dashboard.status, dashboard.catId, dashboard.age, dashboard.views, dashboard.unique_users, favorite.userId FROM dashboard LEFT JOIN favorite ON dashboard.dashId = favorite.dashId WHERE catId = ? AND status = ?";
+        sql = "SELECT dashboard.dashId, dashboard.dashname, dashboard.dashdesc, dashboard.imguri, dashboard.dashlink, dashboard.status, dashboard.catId, dashboard.age, dashboard.views, dashboard.unique_users, fav.userId FROM dashboard LEFT JOIN (SELECT * FROM favorite where userId = ?) AS fav ON dashboard.dashId = fav.dashId WHERE catId = ? AND status = ?";
+        connection.query(sql, [userId, catId, status], function (err, result) {
             if (err) {
                 sendError(err, res);
             }

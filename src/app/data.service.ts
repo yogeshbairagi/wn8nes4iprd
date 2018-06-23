@@ -17,8 +17,8 @@ export class DataService {
       .pipe(map(result => this.result = result.json()));
   }
 
-  getDashboards(catId, status) {
-    return this._http.get("/api/dashboards/"+catId+"/"+status)
+  getDashboards(catId, status, userId) {
+    return this._http.get("/api/dashboards/"+catId+"/"+status+"/"+userId)
       .pipe(map(result => this.result = result.json()));
   }
 

@@ -28,7 +28,7 @@ export class DashboardComponent implements OnInit {
         this.catId = res.data[1].catId;
         this.catDesc = res.data[1].catDesc;
 
-        this._dataService.getDashboards(this.catId, "Approved")
+        this._dataService.getDashboards(this.catId, "Approved", sessionStorage.getItem("userId"))
           .subscribe(res => {
             this.dashboardList = res.data;
           });
@@ -49,7 +49,7 @@ export class DashboardComponent implements OnInit {
     this.catId = item.catId;
     this.catDesc = item.catDesc;
 
-    this._dataService.getDashboards(item.catId, "Approved")
+    this._dataService.getDashboards(item.catId, "Approved", sessionStorage.getItem("userId"))
       .subscribe(res => {
         this.dashboardList = res.data;
       });
@@ -59,7 +59,7 @@ export class DashboardComponent implements OnInit {
 
     this._dataService.addFavorite(item.dashId, sessionStorage.getItem("userId"))
       .subscribe(res => {
-        this._dataService.getDashboards(this.catId, "Approved")
+        this._dataService.getDashboards(this.catId, "Approved", sessionStorage.getItem("userId"))
           .subscribe(res => {
             this.dashboardList = res.data;
           });
@@ -70,7 +70,7 @@ export class DashboardComponent implements OnInit {
 
     this._dataService.removeFavorite(item.dashId, sessionStorage.getItem("userId"))
       .subscribe(res => {
-        this._dataService.getDashboards(this.catId, "Approved")
+        this._dataService.getDashboards(this.catId, "Approved", sessionStorage.getItem("userId"))
           .subscribe(res => {
             this.dashboardList = res.data;
           });
@@ -132,5 +132,4 @@ export class DashboardComponent implements OnInit {
       document.getElementById("tab-tools-content").setAttribute("class", "tab-pane");
     }
   }
-
 }

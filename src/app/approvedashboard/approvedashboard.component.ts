@@ -15,7 +15,7 @@ export class ApprovedashboardComponent implements OnInit {
   constructor(private _dataService: DataService) { }
 
   ngOnInit() {
-    this._dataService.getDashboards(0, "Pending")
+    this._dataService.getDashboards(0, "Pending", sessionStorage.getItem("userId"))
       .subscribe(res => {
         this.dashboardList = res.data;
       });
