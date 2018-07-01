@@ -1,0 +1,36 @@
+<br>
+<div style="width: 60%;margin: 0 auto;">
+<form #addL="ngForm" (ngSubmit)="addLinks()">
+  <label for="category">
+    <b>Category</b>
+  </label>
+  <select name="category" [(ngModel)]="model.catId">
+    <option *ngFor="let item of categoriesList" value="{{item.catId}}">{{item.catDesc}}</option>
+  </select>
+
+  <label for="linkcategory">
+    <b>Link Type</b>
+  </label>
+  <select name="linkcategory" [(ngModel)]="model.linkcategory">
+    <option value="Reports">Reports</option>
+    <option value="Tools">Tools</option>
+  </select>
+
+  <label for="linktitle">
+    <b>Link Title</b>
+  </label>
+  <input type="text" required maxlength="100" name="linktitle" placeholder="Link Title" [(ngModel)]="model.linktitle">
+
+  <label for="linkdesc">
+    <b>Link Description</b>
+  </label>
+  <input type="text" required maxlength="1000" name="linkdesc" placeholder="Link Description" [(ngModel)]="model.linkdesc">
+
+  <label for="linkurl">
+    <b>Link URL</b>
+  </label>
+  <input type="text" required maxlength="1000" name="linkurl" placeholder="Link URL" [(ngModel)]="model.linkurl">
+
+  <input type="submit" value="Add Link" name="submit" [disabled]="!addL.form.valid">
+</form>
+</div>

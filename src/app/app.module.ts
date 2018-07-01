@@ -16,6 +16,13 @@ import { AuthGuard } from './auth.guard';
 import { AdminComponent } from './admin/admin.component';
 import { AdddashboardComponent } from './adddashboard/adddashboard.component';
 import { ApprovedashboardComponent } from './approvedashboard/approvedashboard.component';
+import { AdduserComponent } from './adduser/adduser.component';
+import { UpdateuserComponent } from './updateuser/updateuser.component';
+import { UpdatedashboardComponent } from './updatedashboard/updatedashboard.component';
+import { AddcategoryComponent } from './addcategory/addcategory.component';
+import { AddlinksComponent } from './addlinks/addlinks.component';
+import { UpdatelinksComponent } from './updatelinks/updatelinks.component';
+import { ChangePasswordComponent } from './change-password/change-password.component';
 
 const appRoutes: Routes = [
   {
@@ -44,12 +51,40 @@ const appRoutes: Routes = [
     component: AdminComponent,
     children: [
       {
-        path: '',
+        path: 'approvedashboard',
         component: ApprovedashboardComponent
       },
       {
         path: 'adddashboard',
         component: AdddashboardComponent
+      },
+      {
+        path: 'updatedashboard',
+        component: UpdatedashboardComponent
+      },
+      {
+        path: 'adduser',
+        component: AdduserComponent
+      },
+      {
+        path: 'updateuser',
+        component: UpdateuserComponent
+      },
+      {
+        path: 'addcategory',
+        component: AddcategoryComponent
+      },
+      {
+        path: 'addlinks',
+        component: AddlinksComponent
+      },
+      {
+        path: 'updatelinks',
+        component: UpdatelinksComponent
+      },
+      {
+        path: 'changepassword',
+        component: ChangePasswordComponent
       }
     ]
   },
@@ -67,7 +102,14 @@ const appRoutes: Routes = [
     SignupComponent,
     AdminComponent,
     AdddashboardComponent,
-    ApprovedashboardComponent
+    ApprovedashboardComponent,
+    AdduserComponent,
+    UpdateuserComponent,
+    UpdatedashboardComponent,
+    AddcategoryComponent,
+    AddlinksComponent,
+    UpdatelinksComponent,
+    ChangePasswordComponent
   ],
   imports: [
     BrowserModule,

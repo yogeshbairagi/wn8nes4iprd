@@ -8,29 +8,32 @@
       <div><b>{{userFname}}</b></div>
     </div>
     <ul>
-      <li class="sidebar__item">
-        <a routerLink="/admin">New Dashboard Requests</a>
+      <li routerLinkActive="sidebar__item--selected">
+        <a routerLink="approvedashboard">New Dashboard Requests</a>
       </li>
-      <li class="sidebar__item">
-        <a href="#Disti">Delete Dashboard Requests</a>
-      </li>
-      <li class="sidebar__item">
+      <li routerLinkActive="sidebar__item--selected">
         <a routerLink="adddashboard">Add Dashboard</a>
       </li>
-      <li class="sidebar__item">
-        <a href="#IBP">Update/Delete Dashboard</a>
+      <li routerLinkActive="sidebar__item--selected">
+        <a routerLink="updatedashboard">Update/Delete Dashboard</a>
       </li>
-      <li class="sidebar__item">
-        <a href="#CRP">Add User</a>
+      <li routerLinkActive="sidebar__item--selected">
+        <a routerLink="adduser">Add User</a>
       </li>
-      <li class="sidebar__item">
-        <a href="#CX">Update/Delete User</a>
+      <li routerLinkActive="sidebar__item--selected">
+        <a routerLink="updateuser">Update/Delete User</a>
       </li>
-      <li class="sidebar__item">
-        <a href="#SBM">Change User Role</a>
+      <li routerLinkActive="sidebar__item--selected">
+        <a routerLink="addlinks">Add Links</a>
       </li>
-      <li class="sidebar__item">
-        <a href="#SSA">Add/Delete Category</a>
+      <li routerLinkActive="sidebar__item--selected">
+        <a routerLink="updatelinks">Update/Delete Links</a>
+      </li>
+      <li routerLinkActive="sidebar__item--selected">
+        <a routerLink="addcategory">Add Category</a>
+      </li>
+      <li routerLinkActive="sidebar__item--selected">
+        <a routerLink="changepassword">Change Password</a>
       </li>
     </ul>
   </div>

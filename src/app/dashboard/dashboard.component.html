@@ -14,69 +14,6 @@
         <a [routerLink]="" (click)="onCategoryClick(item)">{{item.catDesc}}</a>
       </li>
     </ul>
-
-    <!-- <br>
-    <div class="form-group">
-      <div>
-        <select id="access" onchange="onChangeAccess(this)" style="width: 95%">
-          <option value="" selected>Access Related Links</option>
-          <option value="https://edsart.cloudapps.cisco.com/groups/28/subgroups">DLS Access</option>
-          <option value="https://edsart.cloudapps.cisco.com/groups/-1/subgroups">Dashboard Access</option>
-          <option value="https://tableau.cisco.com/#/site/GPF/views/GPF-DLS-LOOKUP/GPF-DLS?:iid=5">DLS access I have</option>
-        </select>
-      </div>
-    </div>
-    <div class="form-group">
-      <div>
-        <select id="dashboard" onchange="location = this.options[this.selectedIndex].value;" style="width: 95%">
-          <option style="color:gray" value="index.html" selected>Dashboard Quick Access</option>
-          <option value="#ASCP_LT">ASCP LT</option>
-          <option value="#Backlog_View-Quarter_End">Backlog View-Quarter End</option>
-          <option value="#Booking_Performance">Booking Performance</option>
-          <option value="#Core_CX">Core CX</option>
-          <option value="#Critical_Deal">Critical Deal</option>
-          <option value="#CSP_Profiling_Report">CSP Profiling Report</option>
-          <option value="#CX_Delivery">CX Delivery</option>
-          <option value="#CX_Operations">CX Operations</option>
-          <option value="#Dashboard_Year_End">Dashboard Year End</option>
-          <option value="#Delivery_Metrics">Delivery Metrics</option>
-          <option value="#Disti_Planning">Disti Planning</option>
-          <option value="#Distributor_Shipment_Analysis">Distributor Shipment Analysis</option>
-          <option value="#DP_Analytics">DP Analytics</option>
-          <option value="#ERA">ERA</option>
-          <option value="#Escalation_Risk_Prediction">Escalation Risk Prediction</option>
-          <option value="#Escalation_Risk_Prediction">Escalation Risk Prediction</option>
-          <option value="#Expedite_Optimization">Expedite Optimization</option>
-          <option value="#Expedite_Optimization">Expedite Optimization</option>
-          <option value="#Expedite_Response_Data">Expedite Response Data</option>
-          <option value="#Final_Hour_Shipment_View">Final Hour Shipment</option>
-          <option value="#GPF_Self_Service_Analytics">GPF Self Service Analytics</option>
-          <option value="#Historical_Backlog">Historical Backlog</option>
-          <option value="#Integrated_Fulfillment_Workbench">Integrated Fulfillment Workbench</option>
-          <option value="#Market_Share">Market Share</option>
-          <option value="#Max_Line_Qty_Hold">Max Line Qty Hold</option>
-          <option value="#MLQ_Violation">MLQ Violation</option>
-          <option value="#Monthly_Metrics">Monthly Metrics</option>
-          <option value="#MOPR">MOPR</option>
-          <option value="#NPI_EDI">NPI EDI</option>
-          <option value="#OPT">OPT</option>
-          <option value="#OTS/LTA/LAS">OTS/LTA/LAS</option>
-          <option value="#Plan_Tracking">Plan Tracking</option>
-          <option value="#Plan_Tracking">Plan Tracking</option>
-          <option value="#Q-end_Daily_Expedite_and_Shipment">Q-end Daily Expedite and Shipment</option>
-          <option value="#R12_Scheduling">R12 Scheduling</option>
-          <option value="#R12_Scheduling_vs_Shipments">R12 Scheduling vs Shipments</option>
-          <option value="#Regional_Backlog">Regional Backlog</option>
-          <option value="#RISO_Diagnostic">RISO Diagnostic</option>
-          <option value="#Self_Service_Dashboards">Self Service Dashboards</option>
-          <option value="#Shipment_View-Quarter_End">Shipment View-Quarter End</option>
-          <option value="#Theatre_Plan">Theatre Plan</option>
-          <option value="#Theatre_Plan">Theatre Plan</option>
-          <option value="#VOR">VOR</option>
-          <option value="#VOR_BOM_Accuracy">VOR BOM Volatility</option>
-        </select>
-      </div>
-    </div> -->
   </div>
   <main>
     <header class="header header--tall">
@@ -117,7 +54,7 @@
         </div>
 
         <div class="header-toolbar">
-          <a routerLink="/admin" class="btn btn--icon">
+          <a routerLink="/admin/approvedashboard" class="btn btn--icon">
             <span class="icon-admin" title="Admin Activities"></span>
           </a>
           <a [routerLink]="" (click)="userLogOff()" class="btn btn--icon">

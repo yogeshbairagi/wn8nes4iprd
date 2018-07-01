@@ -35,13 +35,13 @@ export class LoginComponent implements OnInit {
     this._dataService.userLogin(email)
       .subscribe(res => {
         //this.users = res;
-        if (res.length !== 0) {
-          if (res[0].status === "Active") {
-            sessionStorage.setItem("userId", res[0].userId);
-            sessionStorage.setItem("fname", res[0].fname);
-            sessionStorage.setItem("lname", res[0].lname);
-            sessionStorage.setItem("role", res[0].role);
-            sessionStorage.setItem("status", res[0].status);
+        if (res.data.length !== 0) {
+          if (res.data[0].status === "Active") {
+            sessionStorage.setItem("userId", res.data[0].userId);
+            sessionStorage.setItem("fname", res.data[0].fname);
+            sessionStorage.setItem("lname", res.data[0].lname);
+            sessionStorage.setItem("role", res.data[0].role);
+            sessionStorage.setItem("status", res.data[0].status);
             this._router.navigate(["dashboard"]);
           }
           else {

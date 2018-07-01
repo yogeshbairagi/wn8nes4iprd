@@ -3,6 +3,11 @@ import { Injectable } from '@angular/core';
 import { Http, Headers, RequestOptions, URLSearchParams } from '@angular/http';
 import { map } from "rxjs/operators";
 
+//import form classes
+import { AddDashboard } from './add-dashboard';
+import { AddUser } from './add-user';
+import { Addlinks } from './addlinks';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -12,21 +17,41 @@ export class DataService {
 
   constructor(private _http: Http) { }
 
-  getCategories(purpose) {
-    return this._http.get("/api/categories/"+purpose)
+  getUserRoles() {
+    return this._http.get("/api/roles")
+      .pipe(map(result => this.result = result.json()));
+  }
+
+  getUsers() {
+    return this._http.get("/api/getusers")
+      .pipe(map(result => this.result = result.json()));
+  }
+
+  getCategories(purpose: string) {
+    return this._http.get("/api/categories/" + purpose)
+      .pipe(map(result => this.result = result.json()));
+  }
+
+  getLinks(ltype: string) {
+    return this._http.get("/api/getlinks/" + ltype)
+      .pipe(map(result => this.result = result.json()));
+  }
+
+  getLinksbyId(linkid: string) {
+    return this._http.get("/api/getlinkbyid/" + linkid)
       .pipe(map(result => this.result = result.json()));
   }
 
   getDashboards(catId, status, userId) {
-    return this._http.get("/api/dashboards/"+catId+"/"+status+"/"+userId)
+    return this._http.get("/api/dashboards/" + catId + "/" + status + "/" + userId)
       .pipe(map(result => this.result = result.json()));
   }
 
   addFavorite(dashId, userId) {
 
     return this._http.post("/api/addfavorite", {
-      "dashId":dashId,
-      "userId":userId
+      "dashId": dashId,
+      "userId": userId
     })
       .pipe(map(result => this.result = result.json()));
   }
@@ -34,86 +59,136 @@ export class DataService {
   removeFavorite(dashId, userId) {
 
     return this._http.post("/api/removefavorite", {
-      "dashId":dashId,
-      "userId":userId
+      "dashId": dashId,
+      "userId": userId
     })
+      .pipe(map(result => this.result = result.json()));
+  }
+
+  getFavoriteCount(email) {
+    return this._http.get("/api/favoritecount/" + email)
       .pipe(map(result => this.result = result.json()));
   }
 
   userLogin(email) {
-    // let params: URLSearchParams = new URLSearchParams();
-    // params.set('email', email);
-    
-    // let requestOptions = new RequestOptions();
-    // requestOptions.search = params;
 
-    return this._http.get("/api/login/"+email)
-      .pipe(map(result => this.result = result.json().data));
+    return this._http.get("/api/login/" + email)
+      .pipe(map(result => this.result = result.json()));
   }
 
-  userSignup(data) {
-    // let params: URLSearchParams = new URLSearchParams();
-    // params.set('email', email);
-    
-    // let requestOptions = new RequestOptions();
-    // requestOptions.search = params;
-    var fname:string = data.fname.trim();
-    var lname:string = data.lname.trim();
-    var uname:string = data.uname.trim().toLowerCase();
+  userSignup(model: AddUser) {
 
     return this._http.post("/api/signup", {
-      "fname":fname,
-      "lname":lname,
-      "uname":uname,
-      "role":"User",
-      "status":"Pending"
+      "fname": model.fname.trim(),
+      "lname": model.lname.trim(),
+      "uname": model.userId.trim(),
+      "role": model.role,
+      "status": model.status,
+      "password": model.password
     })
       .pipe(map(result => this.result = result.json()));
   }
 
-  addDasboard(data, user) {
+  updateUser(model: AddUser) {
 
-    var category:string = data.category.trim();
-    var dname:string = data.dname.trim();
-    var ddesc:string = data.ddesc.trim();
-    var dlink:string = data.dlink.trim();
-    var uusers:number = parseInt(data.uusers.trim());
-    var views:number = parseInt(data.views.trim());
-    var age:number = parseInt(data.age.trim());
-    var imageuri:string = data.imageuri.trim();
-    var status:string;
+    return this._http.post("/api/updateuser", {
+      "fname": model.fname.trim(),
+      "lname": model.lname.trim(),
+      "uname": model.userId.trim(),
+      "role": model.role,
+      "status": model.status,
+      "password": model.password
+    })
+      .pipe(map(result => this.result = result.json()));
+  }
 
-    if(user === "Admin")
-    {
+  changePassword(password: string) {
+
+    return this._http.post("/api/changepassword", {
+      "uname": sessionStorage.getItem("userId"),
+      "password": password.trim()
+    })
+      .pipe(map(result => this.result = result.json()));
+  }
+
+  deleteUser(uname: string) {
+
+    return this._http.post("/api/deleteuser", {
+      "uname": uname
+    })
+      .pipe(map(result => this.result = result.json()));
+  }
+
+  addDasboard(model: AddDashboard, user: string) {
+
+    var status: string;
+
+    if (user === "Admin") {
       status = "Approved";
     }
-    else
-    {
+    else {
       status = "Pending"
     }
 
     return this._http.post("/api/adddashboard", {
-      "category":category,
-      "dname":dname,
-      "ddesc":ddesc,
-      "dlink":dlink,
-      "uusers":uusers,
-      "views":views,
-      "age":age,
-      "imageuri":imageuri,
-      "status":status
+      "category": parseInt(model.category.trim()),
+      "dname": model.dname.trim(),
+      "ddesc": model.ddesc.trim(),
+      "dlink": model.dlink.trim(),
+      "uusers": model.uusers,
+      "views": model.views,
+      "age": model.age,
+      "imageuri": model.imageuri,
+      "status": status
     })
       .pipe(map(result => this.result = result.json()));
   }
 
-  isLoggedIn()
-  {
-    if(sessionStorage.length)
-    {
+  addLinks(model: Addlinks) {
+
+    return this._http.post("/api/addlinks", {
+      "linktitle": model.linktitle.trim(),
+      "linkdesc": model.linkdesc.trim(),
+      "linkurl": model.linkurl.trim(),
+      "linkcategory": model.linkcategory,
+      "catId": parseInt(model.catId)
+    })
+      .pipe(map(result => this.result = result.json()));
+  }
+
+  addCategory(catDesc: string) {
+    return this._http.post("/api/addcategory", {
+      "catDesc": catDesc.trim()
+    })
+      .pipe(map(result => this.result = result.json()));
+  }
+
+  updateLinks(model: Addlinks) {
+
+    return this._http.post("/api/updatelinks", {
+      "linktitle": model.linktitle.trim(),
+      "linkdesc": model.linkdesc.trim(),
+      "linkurl": model.linkurl.trim(),
+      "linkcategory": model.linkcategory,
+      "catId": parseInt(model.catId),
+      "linkid": model.linkid
+    })
+      .pipe(map(result => this.result = result.json()));
+  }
+
+  deleteLink(linkid: number) {
+
+    return this._http.post("/api/deletelink", {
+      "linkid": linkid
+    })
+      .pipe(map(result => this.result = result.json()));
+  }
+
+  isLoggedIn() {
+    if (sessionStorage.length) {
       return true;
     }
-    else
-    {
+    else {
       return false;
     }
   }

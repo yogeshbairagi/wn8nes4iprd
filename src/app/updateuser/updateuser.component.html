@@ -1,0 +1,47 @@
+<br>
+<div style="width: 60%;margin: 0 auto;">
+  <form #searchU="ngForm" (ngSubmit)="searchUser()">
+    <b *ngIf="isCEC">Enter CEC Email Id</b>
+    <input *ngIf="isCEC" type="text" required email maxlength="30" name="email" placeholder="CEC Email" [(ngModel)]="searchId">
+    
+    <b *ngIf="isName">Select User</b>
+    <select *ngIf="isName" required name="role" [(ngModel)]="searchId">
+      <option *ngFor="let item of userList" value="{{item.userId}}">{{item.fname}} {{item.lname}}</option>
+    </select>
+    
+    <button type="submit" class="btn btn--primary" data-dismiss="modal" [disabled]="!searchU.form.valid">Search</button>
+    <button *ngIf="isName" type="button" value="cec" class="btn btn--primary" data-dismiss="modal" (click)="toggleSearch($event)">Search by CEC ID</button>
+    <button *ngIf="isCEC" type="button" value="uname" class="btn btn--primary" data-dismiss="modal" (click)="toggleSearch($event)">Search by Name</button>
+  </form>
+</div>
+<br>
+<div *ngIf="isFormVisible" style="width: 60%;margin: 0 auto;">
+  <form #addU="ngForm" (ngSubmit)="updateUser()">
+    <label for="role">
+      <b>User Role</b>
+    </label>
+    <select name="role" [(ngModel)]="model.role">
+      <option *ngFor="let item of roleList" value="{{item.role}}">{{item.role}}</option>
+    </select>
+
+    <label for="fname">
+      <b>First Name</b>
+    </label>
+    <input type="text" required maxlength="45" name="fname" placeholder="First Name" [(ngModel)]="model.fname">
+
+    <label for="lname">
+      <b>Last Name</b>
+    </label>
+    <input type="text" required maxlength="45" name="lname" placeholder="Last Name" [(ngModel)]="model.lname">
+
+    <label for="uname">
+      <b>CEC Email</b>
+    </label>
+    <input type="text" required email maxlength="30" name="uname" placeholder="CEC Email" [(ngModel)]="model.userId" [disabled]="true">
+    
+    <div style="width: 60%;margin: 0 auto;">
+      <button type="submit" value="update" class="btn btn--primary" data-dismiss="modal" [disabled]="!addU.form.valid">Update</button>
+      <button type="button" value="delete" class="btn btn--primary" data-dismiss="modal" (click)="deleteUser()">Delete</button>
+    </div>
+  </form>
+</div>

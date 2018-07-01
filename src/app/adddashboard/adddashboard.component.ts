@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FileSelectDirective, FileUploader } from 'ng2-file-upload';
 
+//import add-dashboard class
+import { AddDashboard } from '../add-dashboard';
+
 // Import the DataService
 import { DataService } from '../data.service';
 
@@ -14,12 +17,11 @@ export class AdddashboardComponent implements OnInit {
   uploader: FileUploader = new FileUploader({ url: "/api/upload" });
   attachmentList: any = [];
   categoriesList: any = [];
-  isAdded: boolean;
-  isNotAdded: boolean;
+  model = new AddDashboard('2', '', '', '', 0, 0, 0, '', '');
 
   constructor(private _dataService: DataService) {
     this.uploader.onCompleteItem = (item: any, response: any, status: any, headers: any) => {
-      this.attachmentList.push(JSON.parse(response));
+      this.model.imageuri = JSON.parse(response).filepath;
     }
   }
 
@@ -27,22 +29,44 @@ export class AdddashboardComponent implements OnInit {
     var that = this;
     this._dataService.getCategories("drop")
       .subscribe(res => {
-        that.categoriesList = res.data;
+        if (res.status !== 501) {
+          that.categoriesList = res.data;
+        }
+        else
+          alert(res.message);
       });
   }
 
-  addDashboard(data) {
-    this.isAdded = false;
-    this.isNotAdded = false;
+  addDashboard() {
+    if (this.model.imageuri != '') {
+      this._dataService.addDasboard(this.model, "Admin")
+        .subscribe(res => {
+          if (res.status !== 501) {
+            this.model = new AddDashboard('2', '', '', '', 0, 0, 0, '', '');
+            alert("Dashboard added successfully.");
+          }
+          else {
+            alert(res.message);
+          }
+        });
+    }
+    else {
+      alert("Please upload the image first.");
+    }
+  }
 
-    data.imageuri = this.attachmentList[0].filepath;
+  onUploadChange() {
+    var file: any;
 
-    this._dataService.addDasboard(data, "Admin")
-      .subscribe(res => {
-        if (res.status !== 501)
-          this.isAdded = true;
-        else
-          this.isNotAdded = true;
-      });
+    if (this.model.image == "") {
+      this.uploader.clearQueue();
+    }
+    else if (this.uploader.queue.length > 1) {
+      file = this.uploader.queue[0];
+      this.uploader.queue[0] = this.uploader.queue[1];
+      this.uploader.queue[1] = file;
+
+      this.uploader.queue.pop();
+    }
   }
 }

@@ -1,59 +1,62 @@
 <br>
 <div style="width: 60%;margin: 0 auto;">
-<form #addDash="ngForm" (ngSubmit)="addDashboard(addDash.value)">
-  <label for="category">
-    <b>Function</b>
-  </label>
-  <select name="category" ngModel>
-    <option *ngFor="let item of categoriesList" value="{{item.catId}}">{{item.catDesc}}</option>
-  </select>
-  <label for="dname">
-    <b>Dashboard Name</b>
-  </label>
-  <input type="text" required name="dname" placeholder="Dashboard name" ngModel>
-  <label for="ddesc">
-    <b>Dashboard Description</b>
-  </label>
-  <input type="text" required name="ddesc" placeholder="Dashboard Description" ngModel>
-  <label for="dlink">
-    <b>Dashboard Link</b>
-  </label>
-  <input type="text" required name="dlink" placeholder="Dashboard Link" ngModel>
-  <label for="u_users">
-    <b>Dashboard's no. of unique users</b>
-  </label>
-  <input type="text" required name="uusers" placeholder="Dashboard's no. of unique users" ngModel>
-  <label for="views">
-    <b>Dashboard's no. of views</b>
-  </label>
-  <input type="text" required name="views" placeholder="Dashboard's no. of views" ngModel>
-  <label for="age">
-    <b>Dashboard's age in months</b>
-  </label>
-  <input type="text" required name="age" placeholder="Dashboard's age" ngModel>
+  <form #addDash="ngForm" (ngSubmit)="addDashboard()">
+    <label for="category">
+      <b>Function</b>
+    </label>
+    <select name="category" [(ngModel)]="model.category">
+      <option *ngFor="let item of categoriesList" value="{{item.catId}}">{{item.catDesc}}</option>
+    </select>
 
-  <label for="fileToUpload">
-    <b>Dashboard's image</b>
-  </label>
-  <input style="display: inline;" type="file" name="fileToUpload" id="fileToUpload" single ng2FileSelect [uploader]="uploader" ngModel>
+    <label for="dname">
+      <b>Dashboard Name</b>
+    </label>
+    <input type="text" maxlength="45" required name="dname" placeholder="Dashboard name" [(ngModel)]="model.dname">
 
-  <div *ngFor="let item of uploader.queue">
-    <div id="myProgress">
-      <div id="myBar" [ngStyle]="{'width':item.progress+'%'}"></div>
+    <label for="ddesc">
+      <b>Dashboard Description</b>
+    </label>
+    <input type="text" required maxlength="200" name="ddesc" placeholder="Dashboard Description" [(ngModel)]="model.ddesc">
+    <label for="dlink">
+      <b>Dashboard Link</b>
+    </label>
+    <input type="text" required maxlength="200" name="dlink" placeholder="Dashboard Link" [(ngModel)]="model.dlink">
+    <label for="u_users">
+      <b>Dashboard's no. of unique users</b>
+    </label>
+    <input type="number" required name="uusers" placeholder="Dashboard's no. of unique users" [(ngModel)]="model.uusers">
+    <label for="views">
+      <b>Dashboard's no. of views</b>
+    </label>
+    <input type="number" required name="views" placeholder="Dashboard's no. of views" [(ngModel)]="model.views">
+    <label for="age">
+      <b>Dashboard's age in months</b>
+    </label>
+    <input type="number" required name="age" placeholder="Dashboard's age" [(ngModel)]="model.age">
+
+    <label for="fileToUpload">
+      <b>Dashboard's image</b>
+    </label>
+    <input required style="display: inline;" type="file" name="fileToUpload" id="fileToUpload" single ng2FileSelect [uploader]="uploader"
+      [(ngModel)]="model.image" #image="ngModel" (change)="onUploadChange()">
+
+    <div [hidden]="!image.valid" *ngFor="let item of uploader.queue">
+      <div id="myProgress">
+        <div id="myBar" [ngStyle]="{'width':item.progress+'%'}"></div>
+      </div>
+      <br>
+      <div>
+        <button type="button" (click)="item.upload()">Upload</button>&nbsp;
+        <button type="button" (click)="item.remove(); model.image=''">Cancel</button>
+      </div>
     </div>
-    <br>
-    <div>
-      <button type="button" (click)="item.upload()">Upload</button>&nbsp;
-      <button type="button" (click)="item.remove()">Cancel</button>
-    </div>
-  </div>
-  
-  <input type="hidden" name="imageuri" ngModel>
 
-  <div *ngFor="let item of attachmentList">
-    <img src="uploads\1529333121928_cx_operations.png">
-  </div>
+    <!-- <input type="hidden" name="imageuri" [(ngModel)]="model.image"> -->
 
-  <input type="submit" value="Add Dashboard" name="submit">
-</form>
+    <!-- <div *ngFor="let item of attachmentList">
+      <img src="uploads\1529333121928_cx_operations.png">
+    </div> -->
+
+    <input type="submit" value="Add Dashboard" name="submit" [disabled]="!addDash.form.valid">
+  </form>
 </div>

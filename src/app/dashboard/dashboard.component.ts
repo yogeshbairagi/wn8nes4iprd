@@ -22,16 +22,35 @@ export class DashboardComponent implements OnInit {
   ngOnInit() {
     this.userFname = sessionStorage.fname;
 
-    this._dataService.getCategories("dash")
+    this._dataService.getFavoriteCount(sessionStorage.getItem("userId"))
       .subscribe(res => {
-        this.categoriesList = res.data;
-        this.catId = res.data[1].catId;
-        this.catDesc = res.data[1].catDesc;
+        if (res.data[0].count > 0) {
+          this._dataService.getCategories("dash")
+            .subscribe(res => {
+              this.categoriesList = res.data;
+              this.catId = res.data[0].catId;
+              this.catDesc = res.data[0].catDesc;
 
-        this._dataService.getDashboards(this.catId, "Approved", sessionStorage.getItem("userId"))
-          .subscribe(res => {
-            this.dashboardList = res.data;
-          });
+              this._dataService.getDashboards(this.catId, "Approved", sessionStorage.getItem("userId"))
+                .subscribe(res => {
+                  this.dashboardList = res.data;
+                });
+
+            });
+        }
+        else {
+          this._dataService.getCategories("dash")
+            .subscribe(res => {
+              this.categoriesList = res.data;
+              this.catId = res.data[1].catId;
+              this.catDesc = res.data[1].catDesc;
+
+              this._dataService.getDashboards(this.catId, "Approved", sessionStorage.getItem("userId"))
+                .subscribe(res => {
+                  this.dashboardList = res.data;
+                });
+            });
+        }
       });
   }
 
