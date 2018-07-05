@@ -1,0 +1,61 @@
+<br>
+<div style="width: 90%;margin: 0 auto;">
+  <form>
+    <label for="training_title">
+      <b>Title</b>
+    </label>
+    <input type="text" required id="training_title" name="training_title" placeholder="Title">
+    <label for="desc">
+      <b>Description</b>
+    </label>
+    <input type="text" required id="desc" name="desc" placeholder="Description">
+    <div class="responsive-table">
+      <table class="table table--fixed">
+        <thead>
+          <tr>
+            <th style="width: 16%;">Type</th>
+            <th style="width: 16%;">Link Title</th>
+            <th style="width: 16%;">Description</th>
+            <th style="width: 16%;">Link URL</th>
+            <th style="width: 16%;">Recording Key</th>
+            <th style="width: 12%;"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <select id="type">
+                <option selected>Doc/PPT</option>
+                <option>Webex Recording</option>
+              </select>
+            </td>
+            <td>
+              <input type="text" required id="title" name="title" placeholder="Title">
+            </td>
+            <td>
+              <input type="text" required id="desc" name="desc" placeholder="Description">
+            </td>
+            <td>
+              <input type="text" required id="url" name="url" placeholder="URL">
+            </td>
+            <td>
+              <input type="text" required id="key" name="key" placeholder="Password">
+            </td>
+            <td align="center">
+              <button id="delete_row">
+                <font color=#049fd9>
+                  <span class="icon-remove"></span>
+                </font>
+              </button>&nbsp;
+              <button id="add_row">
+                <font color=#049fd9>
+                  <span class="icon-add"></span>
+                </font>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </form>
+</div>

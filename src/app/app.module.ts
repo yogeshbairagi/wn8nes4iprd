@@ -23,6 +23,7 @@ import { AddcategoryComponent } from './addcategory/addcategory.component';
 import { AddlinksComponent } from './addlinks/addlinks.component';
 import { UpdatelinksComponent } from './updatelinks/updatelinks.component';
 import { ChangePasswordComponent } from './change-password/change-password.component';
+import { AddtrainingComponent } from './addtraining/addtraining.component';
 
 const appRoutes: Routes = [
   {
@@ -85,6 +86,10 @@ const appRoutes: Routes = [
       {
         path: 'changepassword',
         component: ChangePasswordComponent
+      },
+      {
+        path: 'addtraining',
+        component: AddtrainingComponent
       }
     ]
   },
@@ -109,7 +114,8 @@ const appRoutes: Routes = [
     AddcategoryComponent,
     AddlinksComponent,
     UpdatelinksComponent,
-    ChangePasswordComponent
+    ChangePasswordComponent,
+    AddtrainingComponent
   ],
   imports: [
     BrowserModule,

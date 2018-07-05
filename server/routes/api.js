@@ -5,30 +5,57 @@ const mysql = require('mysql');
 const multer = require("multer");
 const fs = require("fs");
 const app = express();
+const session = require('express-session');
+const MySQLStore = require('express-mysql-session')(session);
 
 // Database Connection management
 
-var connection;
+const options = {
+    // Host name for database connection:
+    host: 'localhost',
+    // Port number for database connection:
+    port: 3308,
+    // Database user:
+    user: 'root',
+    // Password for the above database user:
+    password: 'admin',
+    // Database name:
+    database: 'wn8nes4iprd',
+    // Whether or not to automatically check for and clear expired sessions:
+    clearExpired: true,
+    // How frequently expired sessions will be cleared; milliseconds:
+    checkExpirationInterval: 900000,
+    // The maximum age of a valid session; milliseconds:
+    expiration: 86400000,
+    // Whether or not to create the sessions database table, if one does not already exist:
+    createDatabaseTable: true,
+    // Number of connections when creating a connection pool:
+    connectionLimit: 1,
+    // Whether or not to end the database connection when the store is closed.
+    // The default value of this option depends on whether or not a connection was passed to the constructor.
+    // If a connection object is passed to the constructor, the default value for this option is false.
+    endConnectionOnClose: true,
+    charset: 'utf8mb4_bin',
+    schema: {
+        tableName: 'sessions',
+        columnNames: {
+            session_id: 'session_id',
+            expires: 'expires',
+            data: 'data'
+        }
+    }
+};
 
-const connectdb = () => {
-    connection = mysql.createConnection({
-        host: 'localhost',
-        port: '3308',
-        user: 'root',
-        password: 'admin',
-        database: 'wn8nes4iprd'
-    });
+const connection = mysql.createConnection(options); // or mysql.createPool(options);
+const sessionStore = new MySQLStore({options}/* session store options */, connection);
 
-    connection.connect(function (err) {
-        if (err) throw err;
-    });
-}
-
-const releasedb = () => {
-    connection.end(function (err) {
-        if (err) throw err;
-    });
-}
+app.use(session({
+    key: 'session_cookie_name',
+    secret: 'session_cookie_secret',
+    store: sessionStore,
+    resave: false,
+    saveUninitialized: false
+}));
 
 // Error handling
 const sendError = (err, res) => {
@@ -58,15 +85,11 @@ router.get('/roles', (req, res) => {
 
     var sql = 'SELECT distinct role FROM users order by role desc';
 
-    connectdb();
-
     connection.query(sql, function (err, result) {
         if (err) {
-            releasedb();
             sendError(err, res);
         }
         else {
-            releasedb();
             sendResponse(result, res);
         }
     });
@@ -77,15 +100,11 @@ router.get('/getusers', (req, res) => {
 
     var sql = 'SELECT * FROM users order by fname';
 
-    connectdb();
-
     connection.query(sql, function (err, result) {
         if (err) {
-            releasedb();
             sendError(err, res);
         }
         else {
-            releasedb();
             sendResponse(result, res);
         }
     });
@@ -98,15 +117,11 @@ router.get('/getlinks/:linkcategory', (req, res) => {
 
     var sql = 'SELECT * FROM links WHERE linkcategory = ? order by linktitle';
 
-    connectdb();
-
     connection.query(sql, [linkcategory], function (err, result) {
         if (err) {
-            releasedb();
             sendError(err, res);
         }
         else {
-            releasedb();
             sendResponse(result, res);
         }
     });
@@ -119,15 +134,11 @@ router.get('/getlinkbyid/:linkid', (req, res) => {
 
     var sql = 'SELECT * FROM links WHERE linkid = ?';
 
-    connectdb();
-
     connection.query(sql, [linkid], function (err, result) {
         if (err) {
-            releasedb();
             sendError(err, res);
         }
         else {
-            releasedb();
             sendResponse(result, res);
         }
     });
@@ -143,15 +154,11 @@ router.get('/categories/:purpose', (req, res) => {
         sql = sql + " WHERE visibleTo = 'All'";
     }
 
-    connectdb();
-
     connection.query(sql, function (err, result) {
         if (err) {
-            releasedb();
             sendError(err, res);
         }
         else {
-            releasedb();
             sendResponse(result, res);
         }
     });
@@ -164,15 +171,11 @@ router.post('/addcategory', (req, res) => {
 
     var sql = 'INSERT INTO categories (catDesc, visibleTo) VALUES (?, ?)';
 
-    connectdb();
-
     connection.query(sql, [catDesc, "All"], function (err, result) {
         if (err) {
-            releasedb();
             sendError(err, res);
         }
         else {
-            releasedb();
             sendResponse(result, res);
         }
     });
@@ -189,15 +192,11 @@ router.get('/dashboards/:catId/:status/:userId', (req, res) => {
     if (catId === 0) {
         sql = "SELECT * FROM dashboard WHERE status = ?";
 
-        connectdb();
-
         connection.query(sql, [status], function (err, result) {
             if (err) {
-                releasedb();
                 sendError(err, res);
             }
             else {
-                releasedb();
                 sendResponse(result, res);
             }
         });
@@ -205,15 +204,11 @@ router.get('/dashboards/:catId/:status/:userId', (req, res) => {
     else if (catId === 1) {
         sql = "SELECT dashboard.dashId, dashboard.dashname, dashboard.dashdesc, dashboard.imguri, dashboard.dashlink, dashboard.status, dashboard.catId, dashboard.age, dashboard.views, dashboard.unique_users, favorite.userId FROM dashboard INNER JOIN favorite ON dashboard.dashId = favorite.dashId WHERE status = ? AND userId = ?";
 
-        connectdb();
-
         connection.query(sql, [status, userId], function (err, result) {
             if (err) {
-                releasedb();
                 sendError(err, res);
             }
             else {
-                releasedb();
                 sendResponse(result, res);
             }
         });
@@ -221,16 +216,12 @@ router.get('/dashboards/:catId/:status/:userId', (req, res) => {
     else {
         //sql = "SELECT dashboard.dashId, dashboard.dashname, dashboard.dashdesc, dashboard.imguri, dashboard.dashlink, dashboard.status, dashboard.catId, dashboard.age, dashboard.views, dashboard.unique_users, favorite.userId FROM dashboard LEFT JOIN favorite ON dashboard.dashId = favorite.dashId WHERE catId = ? AND status = ?";
         sql = "SELECT dashboard.dashId, dashboard.dashname, dashboard.dashdesc, dashboard.imguri, dashboard.dashlink, dashboard.status, dashboard.catId, dashboard.age, dashboard.views, dashboard.unique_users, fav.userId FROM dashboard LEFT JOIN (SELECT * FROM favorite where userId = ?) AS fav ON dashboard.dashId = fav.dashId WHERE catId = ? AND status = ?";
-        
-        connectdb();
 
         connection.query(sql, [userId, catId, status], function (err, result) {
             if (err) {
-                releasedb();
                 sendError(err, res);
             }
             else {
-                releasedb();
                 sendResponse(result, res);
             }
         });
@@ -244,15 +235,11 @@ router.get('/favoritecount/:email', (req, res) => {
 
     var sql = 'SELECT count(*) as count FROM favorite WHERE userId = ?';
 
-    connectdb();
-
     connection.query(sql, [email], function (err, result) {
         if (err) {
-            releasedb();
             sendError(err, res);
         }
         else {
-            releasedb();
             sendResponse(result, res);
         }
     });
@@ -266,15 +253,11 @@ router.post('/changepassword', (req, res) => {
 
     var sql = 'UPDATE users SET password=? WHERE userId=?';
 
-    connectdb();
-
     connection.query(sql, [password, email], function (err, result) {
         if (err) {
-            releasedb();
             sendError(err, res);
         }
         else {
-            releasedb();
             sendResponse(result, res);
         }
     });
@@ -287,16 +270,11 @@ router.get('/login/:email', (req, res) => {
 
     var sql = 'SELECT * FROM users WHERE userId = ?';
 
-    connectdb();
-
     connection.query(sql, [email], function (err, result) {
         if (err) {
-            releasedb();
             sendError(err, res);
         }
-        else
-        {
-            releasedb();
+        else {
             sendResponse(result, res);
         }
     });
@@ -314,15 +292,11 @@ router.post('/signup', (req, res) => {
 
     var sql = 'INSERT INTO users (userId, fname, lname, role, status, password) VALUES (?,?,?,?,?,?)';
 
-    connectdb();
-
     connection.query(sql, [email, fname, lname, role, status, password], function (err, result) {
         if (err) {
-            releasedb();
             sendError(err, res);
         }
         else {
-            releasedb();
             sendResponse(result, res);
         }
     });
@@ -340,15 +314,11 @@ router.post('/updateuser', (req, res) => {
 
     var sql = 'UPDATE users SET userId=?, fname=?, lname=?, role=?, status=?, password=? WHERE userId=?';
 
-    connectdb();
-
     connection.query(sql, [email, fname, lname, role, status, password, email], function (err, result) {
         if (err) {
-            releasedb();
             sendError(err, res);
         }
         else {
-            releasedb();
             sendResponse(result, res);
         }
     });
@@ -358,18 +328,14 @@ router.post('/updateuser', (req, res) => {
 router.post('/deleteuser', (req, res) => {
 
     var email = req.body.uname;
-    
-    var sql = 'DELETE FROM users WHERE userId=?';
 
-    connectdb();
+    var sql = 'DELETE FROM users WHERE userId=?';
 
     connection.query(sql, [email], function (err, result) {
         if (err) {
-            releasedb();
             sendError(err, res);
         }
         else {
-            releasedb();
             sendResponse(result, res);
         }
     });
@@ -383,15 +349,11 @@ router.post('/addfavorite', (req, res) => {
 
     var sql = 'INSERT INTO favorite (userId, dashId) VALUES (?,?)';
 
-    connectdb();
-
     connection.query(sql, [userId, dashId], function (err, result) {
         if (err) {
-            releasedb();
             sendError(err, res);
         }
         else {
-            releasedb();
             sendResponse(result, res);
         }
     });
@@ -405,15 +367,11 @@ router.post('/removefavorite', (req, res) => {
 
     var sql = 'DELETE FROM favorite WHERE dashId = ? AND userId = ?';
 
-    connectdb();
-
     connection.query(sql, [dashId, userId], function (err, result) {
         if (err) {
-            releasedb();
             sendError(err, res);
         }
         else {
-            releasedb();
             sendResponse(result, res);
         }
     });
@@ -434,15 +392,29 @@ router.post('/adddashboard', (req, res) => {
 
     var sql = 'INSERT INTO dashboard (dashname, dashdesc, imguri, dashlink, status, catId, age, views, unique_users) VALUES (?,?,?,?,?,?,?,?,?)';
 
-    connectdb();
-
     connection.query(sql, [dname, ddesc, imageuri, dlink, status, category, age, views, uusers], function (err, result) {
         if (err) {
-            releasedb();
             sendError(err, res);
         }
         else {
-            releasedb();
+            sendResponse(result, res);
+        }
+    });
+});
+
+// Add Training
+router.post('/addtraining', (req, res) => {
+
+    var title = req.body.title;
+    var desc = req.body.desc;
+
+    var sql = 'call wn8nes4iprd.create_training(?, ?)';
+
+    connection.query(sql, [title, desc], function (err, result) {
+        if (err) {
+            sendError(err, res);
+        }
+        else {
             sendResponse(result, res);
         }
     });
@@ -456,18 +428,14 @@ router.post('/addlinks', (req, res) => {
     var linkurl = req.body.linkurl;
     var linkcategory = req.body.linkcategory;
     var catId = req.body.catId;
-    
-    var sql = 'INSERT INTO links (linktitle, linkdesc, linkurl, linkcategory, catId) VALUES (?,?,?,?,?)';
 
-    connectdb();
+    var sql = 'INSERT INTO links (linktitle, linkdesc, linkurl, linkcategory, catId) VALUES (?,?,?,?,?)';
 
     connection.query(sql, [linktitle, linkdesc, linkurl, linkcategory, catId], function (err, result) {
         if (err) {
-            releasedb();
             sendError(err, res);
         }
         else {
-            releasedb();
             sendResponse(result, res);
         }
     });
@@ -482,18 +450,14 @@ router.post('/updatelinks', (req, res) => {
     var linkcategory = req.body.linkcategory;
     var catId = req.body.catId;
     var linkid = req.body.linkid;
-    
-    var sql = 'UPDATE links SET linktitle=?, linkdesc=?, linkurl=?, linkcategory=?, catId=? WHERE linkid=?';
 
-    connectdb();
+    var sql = 'UPDATE links SET linktitle=?, linkdesc=?, linkurl=?, linkcategory=?, catId=? WHERE linkid=?';
 
     connection.query(sql, [linktitle, linkdesc, linkurl, linkcategory, catId, linkid], function (err, result) {
         if (err) {
-            releasedb();
             sendError(err, res);
         }
         else {
-            releasedb();
             sendResponse(result, res);
         }
     });
@@ -503,18 +467,14 @@ router.post('/updatelinks', (req, res) => {
 router.post('/deletelink', (req, res) => {
 
     var linkid = req.body.linkid;
-    
-    var sql = 'DELETE FROM links WHERE linkid=?';
 
-    connectdb();
+    var sql = 'DELETE FROM links WHERE linkid=?';
 
     connection.query(sql, [linkid], function (err, result) {
         if (err) {
-            releasedb();
             sendError(err, res);
         }
         else {
-            releasedb();
             sendResponse(result, res);
         }
     });
