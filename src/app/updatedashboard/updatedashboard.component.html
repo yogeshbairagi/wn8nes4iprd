@@ -1,3 +1,75 @@
-<p>
-  updatedashboard works!
-</p>
+<br>
+<div style="width: 60%;margin: 0 auto;">
+  <form #searchD="ngForm" (ngSubmit)="displayDetails()">
+    <b>Select Category</b>
+    <select required name="category" [(ngModel)]="category" (change)="onCategoryChange()">
+      <option *ngFor="let item of categoriesList" value="{{item.catId}}">{{item.catDesc}}</option>
+    </select>
+
+    <b>Select Dashboard</b>
+    <select required name="dashboard" [(ngModel)]="dashId" (change)="onDashChange()">
+      <option *ngFor="let item of dashboardList" value="{{item.dashId}}">{{item.dashname}}</option>
+    </select>
+
+    <button type="submit" class="btn btn--primary" data-dismiss="modal" [disabled]="!searchD.form.valid">Display Details</button>
+  </form>
+</div>
+<br>
+<div *ngIf="isFormVisible" style="width: 60%;margin: 0 auto;">
+  <form #addDash="ngForm" (ngSubmit)="updateDashboard()">
+    <label for="category">
+      <b>Function</b>
+    </label>
+    <select name="category" [(ngModel)]="model.category" [disabled]="true">
+      <option *ngFor="let item of categoriesList" value="{{item.catId}}">{{item.catDesc}}</option>
+    </select>
+
+    <label for="dname">
+      <b>Dashboard Name</b>
+    </label>
+    <input type="text" maxlength="45" required name="dname" placeholder="Dashboard name" [(ngModel)]="model.dname" [disabled]="true">
+
+    <label for="ddesc">
+      <b>Dashboard Description</b>
+    </label>
+    <input type="text" required maxlength="200" name="ddesc" placeholder="Dashboard Description" [(ngModel)]="model.ddesc">
+    <label for="dlink">
+      <b>Dashboard Link</b>
+    </label>
+    <input type="text" required maxlength="200" name="dlink" placeholder="Dashboard Link" [(ngModel)]="model.dlink">
+    <label for="u_users">
+      <b>Dashboard's no. of unique users</b>
+    </label>
+    <input type="number" required name="uusers" placeholder="Dashboard's no. of unique users" [(ngModel)]="model.uusers">
+    <label for="views">
+      <b>Dashboard's no. of views</b>
+    </label>
+    <input type="number" required name="views" placeholder="Dashboard's no. of views" [(ngModel)]="model.views">
+    <label for="age">
+      <b>Dashboard's age in months</b>
+    </label>
+    <input type="number" required name="age" placeholder="Dashboard's age" [(ngModel)]="model.age">
+
+    <label for="fileToUpload">
+      <b>Dashboard's image</b>
+    </label>
+    <input style="display: inline;" type="file" name="fileToUpload" id="fileToUpload" single ng2FileSelect [uploader]="uploader"
+      [(ngModel)]="model.image" #image="ngModel" (change)="onUploadChange()">
+
+    <div [hidden]="!image.valid" *ngFor="let item of uploader.queue">
+      <div id="myProgress">
+        <div id="myBar" [ngStyle]="{'width':item.progress+'%'}"></div>
+      </div>
+      <br>
+      <div>
+        <button type="button" (click)="item.upload()">Upload</button>&nbsp;
+        <button type="button" (click)="item.remove(); model.image=''">Cancel</button>
+      </div>
+    </div>
+
+    <div style="width: 60%;margin: 0 auto;">
+      <button type="submit" value="update" class="btn btn--primary" data-dismiss="modal" [disabled]="!addDash.form.valid">Update</button>
+      <button type="button" value="delete" class="btn btn--primary" data-dismiss="modal" (click)="deleteDashboard()">Delete</button>
+    </div>
+  </form>
+</div>

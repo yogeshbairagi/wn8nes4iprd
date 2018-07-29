@@ -11,7 +11,6 @@ import { HttpModule } from '@angular/http';
 import { DataService } from './data.service';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { LoginComponent } from './login/login.component';
-import { SignupComponent } from './signup/signup.component';
 import { AuthGuard } from './auth.guard';
 import { AdminComponent } from './admin/admin.component';
 import { AdddashboardComponent } from './adddashboard/adddashboard.component';
@@ -24,6 +23,7 @@ import { AddlinksComponent } from './addlinks/addlinks.component';
 import { UpdatelinksComponent } from './updatelinks/updatelinks.component';
 import { ChangePasswordComponent } from './change-password/change-password.component';
 import { AddtrainingComponent } from './addtraining/addtraining.component';
+import { AddMaterialComponent } from './add-material/add-material.component';
 
 const appRoutes: Routes = [
   {
@@ -90,12 +90,12 @@ const appRoutes: Routes = [
       {
         path: 'addtraining',
         component: AddtrainingComponent
+      },
+      {
+        path: 'addmaterial',
+        component: AddMaterialComponent
       }
     ]
-  },
-  {
-    path: 'signup',
-    component: SignupComponent
   }
 ]
 
@@ -104,7 +104,6 @@ const appRoutes: Routes = [
     AppComponent,
     DashboardComponent,
     LoginComponent,
-    SignupComponent,
     AdminComponent,
     AdddashboardComponent,
     ApprovedashboardComponent,
@@ -115,7 +114,8 @@ const appRoutes: Routes = [
     AddlinksComponent,
     UpdatelinksComponent,
     ChangePasswordComponent,
-    AddtrainingComponent
+    AddtrainingComponent,
+    AddMaterialComponent
   ],
   imports: [
     BrowserModule,

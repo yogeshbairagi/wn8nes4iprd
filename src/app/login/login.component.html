@@ -1,51 +1,109 @@
-<div id="myModal" class="modal fade" role="dialog">
-    <div class="modal__dialog" role="document">
-          <div class="modal__content">
-                <a href="guest.html" class="modal__close" data-dismiss="modal">
-                      <span class="icon-close"></span>
-                </a>
-                <div class="modal__header">
-                      <div class="icon-cisco text-blue text-huge"></div>
-                      <br>
-                      <h4 class="modal__title">GP&F Analytics Dashboard</h4>
-                      <br>
-                      <!-- <h4 class="modal__title">GP&F Dashboard Page</h4> -->
-                </div>
-                <!-- <div class="modal__body">
-                      <p>Please enter your CEC ID (E.g. abc@cisco.com)</p>
-                </div> -->
-                <form #userlogin="ngForm" (ngSubmit)="logIn(userlogin.value)">
-                      <label for="uname" class="username-label" tabindex=1 data-text="Cisco_Login_Local_Content_User_Name">CEC ID</label>
-                      &nbsp;
-                      <input type="text" name="uname" placeholder="abc@cisco.com" required ngModel>&nbsp;
-                      <font color="red">
-                            <span class="icon-asterisk"></span>
-                      </font>
-                      <br>
-                      <br>
-                      <br>
-                      <button type="submit" class="btn btn--primary" data-dismiss="modal">Submit</button>
-                      <br>
-                      <br>
-                      <font color="red">
-                            <b>
-                                  <span *ngIf="isPending">User request pending. Please contact your manager.</span>
-                                  <span *ngIf="isFailed">User doesn't exist. Please signup to use the dashboard.</span>
-                            </b>
-                      </font>
-                      <br>
-                      <br>
-                      <a href="guest.html" style="float:left">Guest User</a>
-                      <a routerLink="/signup" style="float:right">Sign up</a>
-                </form>
-          </div>
+<div style="width: 35%;margin: 0 auto; height: 60%;">
+      <div class="content-fluid">
+            <main>
+                  <header class="header">
+                        <div class="header-bar container">
+                              <a href="http://www.cisco.com" class="header-bar__logo">
+                                    <span class="icon-cisco"></span>
+                              </a>
+                              <div class="header-bar__main">
+                                    <div class="header-heading">
+                                          <h1>
+                                                <b class="page-title">GP&F Landing Page</b>
+                                          </h1>
+                                    </div>
+                              </div>
+                              <div class="header-bar__main">
+                              </div>
+                              <div class="header-toolbar"></div>
+                        </div>
+                  </header>
+                  <div class="content">
+                        <div class="container" style="width: 50%;margin: 0 auto;">
+                              <input type="button" class="btn btn--primary" id="modal-login-open" value="Login" style="margin-top: 40px;margin-left: 10px;"
+                                    name="login" (click)="onLoginClick()">
+                              <input type="submit" class="btn btn--primary" id="modal-register-open" value="Register" style="margin-top: 25px;" name="register"
+                                    (click)="onRegisterClick()">
+                        </div>
+                  </div>
 
-          <br>
-          <div class="modal__footer">
-          </div>
-          <div class="footer__close">
-                <!-- <p>or</p>
-                <a href="guest.html">Log in as Guest User</a> -->
-          </div>
-    </div>
+                  <div class="modal modal--animated modal--large hide" id="modal-login">
+                        <div class="modal__dialog">
+                              <div class="modal__content">
+                                    <a class="modal__close">
+                                          <span class="icon-close"></span>
+                                    </a>
+                                    <div class="modal__header">
+                                          <div class="icon-cisco text-blue text-huge half-margin-bottom"></div>
+                                          <h1 class="modal__title">GP&F Landing Page</h1>
+                                    </div>
+                                    <div class="modal__body" style="width: 50%;margin: 0 auto;">
+                                          <form #userlogin="ngForm" (ngSubmit)="logIn()">
+                                                <label for="userid">
+                                                      <b>User ID</b>
+                                                </label>
+                                                <input type="text" required email maxlength="30" name="userid" placeholder="userid@cisco.com" [(ngModel)]="model.userId">
+
+                                                <label *ngIf="model.pwdshow" for="pwd">
+                                                      <b>Password</b>
+                                                </label>
+                                                <input *ngIf="model.pwdshow" type="password" required maxlength="15" name="pwd" placeholder="*******" [(ngModel)]="model.password">
+
+                                                <input *ngIf="model.goshow" type="button" class="btn btn--primary" value="Go to Dashboard" name="dashboard" (click)="userCheck()"
+                                                      [disabled]="!userlogin.form.valid">
+                                                <input *ngIf="model.pwdshow" type="submit" class="btn btn--primary" value="Login" name="submit" [disabled]="!userlogin.form.valid">
+
+                                                <br>
+                                                <br>
+                                                <font color="red">
+                                                      <b>
+                                                            <span *ngIf="model.msgshow">User doesn't exist. Please signup to use the dashboard.</span>
+                                                      </b>
+                                                </font>
+
+                                                <font color="red">
+                                                      <b>
+                                                            <span *ngIf="model.loginmsg">Invalid Login ID or Passwoprd. Please enter correct credentials.</span>
+                                                      </b>
+                                                </font>
+                                          </form>
+                                    </div>
+                                    <div class="modal__footer"></div>
+                              </div>
+                        </div>
+                  </div>
+                  <div class="modal modal--animated modal--large hide" id="modal-register">
+                        <div class="modal__dialog">
+                              <div class="modal__content">
+                                    <a class="modal__close">
+                                          <span class="icon-close"></span>
+                                    </a>
+                                    <div class="modal__header">
+                                          <div class="icon-cisco text-blue text-huge half-margin-bottom"></div>
+                                          <h1 class="modal__title">GP&F Landing Page</h1>
+                                    </div>
+                                    <div class="modal__body" style="width: 50%;margin: 0 auto;">
+                                          <form #addU="ngForm" (ngSubmit)="userSignup()">
+                                                <label for="fname">
+                                                      <b>First Name</b>
+                                                </label>
+                                                <input type="text" required maxlength="45" name="fname" placeholder="First Name" [(ngModel)]="umodel.fname">
+                                                <label for="lname">
+                                                      <b>Last Name</b>
+                                                </label>
+                                                <input type="text" required maxlength="45" name="lname" placeholder="Last Name" [(ngModel)]="umodel.lname">
+                                                <label for="userid">
+                                                      <b>User ID</b>
+                                                </label>
+                                                <input type="text" required email maxlength="30" name="uname" placeholder="CEC Email" [(ngModel)]="umodel.userId">
+                                                <input type="submit" class="btn btn--primary" value="Sign up" name="submit" [disabled]="!addU.form.valid">
+                                          </form>
+                                    </div>
+                                    <div class="modal__footer">
+                                    </div>
+                              </div>
+                        </div>
+                  </div>
+            </main>
+      </div>
 </div>

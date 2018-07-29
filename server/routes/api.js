@@ -47,7 +47,7 @@ const options = {
 };
 
 const connection = mysql.createConnection(options); // or mysql.createPool(options);
-const sessionStore = new MySQLStore({options}/* session store options */, connection);
+const sessionStore = new MySQLStore({ options }/* session store options */, connection);
 
 app.use(session({
     key: 'session_cookie_name',
@@ -144,6 +144,136 @@ router.get('/getlinkbyid/:linkid', (req, res) => {
     });
 });
 
+// Get Links by Category and Type
+router.get('/getlinkbycat/:category/:type/:userId', (req, res) => {
+
+    var category = parseInt(req.params.category);
+    var linkcategory = req.params.type;
+    var userId = req.params.userId;
+
+    if (category === 1) {
+        sql = "SELECT links.linkId, links.linktitle, links.linkdesc, links.linkurl, links.linkcategory, links.catId, favoritelinks.userId FROM links INNER JOIN favoritelinks ON links.linkId = favoritelinks.linkId WHERE linkcategory = ? AND userId = ? ORDER BY links.linktitle";
+
+        connection.query(sql, [linkcategory, userId], function (err, result) {
+            if (err) {
+                sendError(err, res);
+            }
+            else {
+                sendResponse(result, res);
+            }
+        });
+    }
+    else {
+        sql = "SELECT links.linkId, links.linktitle, links.linkdesc, links.linkurl, links.linkcategory, links.catId, favoritelinks.userId FROM links LEFT JOIN (SELECT * FROM favoritelinks where userId = ?) AS favoritelinks ON links.linkId = favoritelinks.linkId WHERE catId = ? AND linkcategory = ? ORDER BY links.linktitle";
+
+        connection.query(sql, [userId, category, linkcategory], function (err, result) {
+            if (err) {
+                sendError(err, res);
+            }
+            else {
+                sendResponse(result, res);
+            }
+        });
+    }
+
+    // var sql = 'SELECT * FROM links WHERE catId=? AND linkcategory=? order by linktitle';
+
+    // connection.query(sql, [category, linkcategory], function (err, result) {
+    //     if (err) {
+    //         sendError(err, res);
+    //     }
+    //     else {
+    //         sendResponse(result, res);
+    //     }
+    // });
+});
+
+// Get Training by Category
+router.get('/training/:category', (req, res) => {
+
+    var category = parseInt(req.params.category);
+
+    var sql = 'SELECT * FROM training WHERE category = ?';
+
+    connection.query(sql, [category], function (err, result) {
+        if (err) {
+            sendError(err, res);
+        }
+        else {
+            sendResponse(result, res);
+        }
+    });
+});
+
+// Get Material by Category
+router.get('/getmaterial/:category/:userId', (req, res) => {
+
+    var category = parseInt(req.params.category);
+    var userId = req.params.userId;
+
+    //var sql = 'SELECT training.tid, training.title, training.tdesc, material.matid, material.mattitle, material.matdesc, material.maturl, material.mattype FROM training inner join material where training.tid = material.tid and training.category = ? order by training.title, material.mattype, material.mattitle';
+    if (category === 1) {
+        //var sql = 'SELECT mat.tid, mat.title, mat.tdesc, mat.matid, mat.mattitle, mat.matdesc, mat.maturl, mat.mattype, favoritematerial.userId FROM (SELECT training.tid, training.title, training.tdesc, material.matid, material.mattitle, material.matdesc, material.maturl, material.mattype FROM training inner join material where training.tid = material.tid and training.category = ? order by training.title, material.mattype, material.mattitle) AS mat INNER JOIN favoritematerial ON mat.matid = favoritematerial.matid WHERE userId = ?';
+        
+        var sql = 'SELECT training.tid, training.title, training.tdesc, mat.matid, mat.mattitle, mat.matdesc, mat.maturl, mat.mattype, mat.userId FROM training inner join (SELECT material.matid, material.mattitle, material.matdesc, material.maturl, material.tid, material.mattype, favoritematerial.userId from material inner join favoritematerial where material.matid = favoritematerial.matid and favoritematerial.userId = ?) as mat where training.tid = mat.tid ORDER BY training.title, mat.mattype, mat.mattitle';
+
+        connection.query(sql, [userId], function (err, result) {
+            if (err) {
+                sendError(err, res);
+            }
+            else {
+                sendResponse(result, res);
+            }
+        });
+    }
+    else {
+        var sql = 'SELECT mat.tid, mat.title, mat.tdesc, mat.matid, mat.mattitle, mat.matdesc, mat.maturl, mat.mattype, favoritematerial.userId FROM (SELECT training.tid, training.title, training.tdesc, material.matid, material.mattitle, material.matdesc, material.maturl, material.mattype FROM training inner join material where training.tid = material.tid and training.category = ? order by training.title, material.mattype, material.mattitle) AS mat LEFT JOIN (SELECT * FROM favoritematerial where userId = ?) AS favoritematerial ON mat.matid = favoritematerial.matid';
+        
+        connection.query(sql, [category, userId], function (err, result) {
+            if (err) {
+                sendError(err, res);
+            }
+            else {
+                sendResponse(result, res);
+            }
+        });
+    }
+});
+
+// Get Rowspan for Training
+router.get('/getrowspan/:category/:userId', (req, res) => {
+
+    var category = parseInt(req.params.category);
+    var userId = req.params.userId;
+
+    var sql;
+
+    if(category === 1)
+    {
+        sql = 'SELECT training.tid, training.title, count(*) as count FROM training inner join (SELECT material.matid, material.mattitle, material.matdesc, material.maturl, material.tid, material.mattype, favoritematerial.userId from material inner join favoritematerial where material.matid = favoritematerial.matid and favoritematerial.userId = ?) as mat where training.tid = mat.tid group by training.tid';
+        connection.query(sql, [userId], function (err, result) {
+            if (err) {
+                sendError(err, res);
+            }
+            else {
+                sendResponse(result, res);
+            }
+        });
+    }
+    else
+    {
+        sql = 'SELECT training.tid, training.title, count(*) as count FROM training inner join material where training.tid = material.tid and training.category = ? group by training.tid';
+        connection.query(sql, [category], function (err, result) {
+            if (err) {
+                sendError(err, res);
+            }
+            else {
+                sendResponse(result, res);
+            }
+        });
+    }
+});
+
 //Get Categories
 router.get('/categories/:purpose', (req, res) => {
 
@@ -181,6 +311,47 @@ router.post('/addcategory', (req, res) => {
     });
 });
 
+// Add Training
+router.post('/addtraining', (req, res) => {
+
+    var title = req.body.title;
+    var desc = req.body.desc;
+    var category = req.body.category;
+
+    var sql = 'INSERT INTO training (title, category, tdesc) VALUES (?,?,?)';
+
+    connection.query(sql, [title, category, desc], function (err, result) {
+        if (err) {
+            sendError(err, res);
+        }
+        else {
+            sendResponse(result, res);
+        }
+    });
+});
+
+// Add Material
+router.post('/addmaterial', (req, res) => {
+
+    var materialList = req.body.materialList;
+    var records = [];
+
+    for (var i = 0; i < materialList.length; i++) {
+        records.push([materialList[i].mattitle, materialList[i].matdesc, materialList[i].maturl, materialList[i].tid, materialList[i].mattype]);
+    }
+
+    var sql = 'INSERT INTO material (mattitle, matdesc, maturl, tid, mattype) VALUES ?';
+
+    connection.query(sql, [records], function (err, result) {
+        if (err) {
+            sendError(err, res);
+        }
+        else {
+            sendResponse(result, res);
+        }
+    });
+});
+
 //Get Dashboards
 router.get('/dashboards/:catId/:status/:userId', (req, res) => {
 
@@ -202,7 +373,7 @@ router.get('/dashboards/:catId/:status/:userId', (req, res) => {
         });
     }
     else if (catId === 1) {
-        sql = "SELECT dashboard.dashId, dashboard.dashname, dashboard.dashdesc, dashboard.imguri, dashboard.dashlink, dashboard.status, dashboard.catId, dashboard.age, dashboard.views, dashboard.unique_users, favorite.userId FROM dashboard INNER JOIN favorite ON dashboard.dashId = favorite.dashId WHERE status = ? AND userId = ?";
+        sql = "SELECT dashboard.dashId, dashboard.dashname, dashboard.dashdesc, dashboard.imguri, dashboard.dashlink, dashboard.status, dashboard.catId, dashboard.age, dashboard.views, dashboard.unique_users, favorite.userId FROM dashboard INNER JOIN favorite ON dashboard.dashId = favorite.dashId WHERE status = ? AND userId = ? ORDER BY dashboard.views DESC";
 
         connection.query(sql, [status, userId], function (err, result) {
             if (err) {
@@ -215,7 +386,7 @@ router.get('/dashboards/:catId/:status/:userId', (req, res) => {
     }
     else {
         //sql = "SELECT dashboard.dashId, dashboard.dashname, dashboard.dashdesc, dashboard.imguri, dashboard.dashlink, dashboard.status, dashboard.catId, dashboard.age, dashboard.views, dashboard.unique_users, favorite.userId FROM dashboard LEFT JOIN favorite ON dashboard.dashId = favorite.dashId WHERE catId = ? AND status = ?";
-        sql = "SELECT dashboard.dashId, dashboard.dashname, dashboard.dashdesc, dashboard.imguri, dashboard.dashlink, dashboard.status, dashboard.catId, dashboard.age, dashboard.views, dashboard.unique_users, fav.userId FROM dashboard LEFT JOIN (SELECT * FROM favorite where userId = ?) AS fav ON dashboard.dashId = fav.dashId WHERE catId = ? AND status = ?";
+        sql = "SELECT dashboard.dashId, dashboard.dashname, dashboard.dashdesc, dashboard.imguri, dashboard.dashlink, dashboard.status, dashboard.catId, dashboard.age, dashboard.views, dashboard.unique_users, fav.userId FROM dashboard LEFT JOIN (SELECT * FROM favorite where userId = ?) AS fav ON dashboard.dashId = fav.dashId WHERE catId = ? AND status = ? ORDER BY dashboard.views DESC";
 
         connection.query(sql, [userId, catId, status], function (err, result) {
             if (err) {
@@ -226,6 +397,83 @@ router.get('/dashboards/:catId/:status/:userId', (req, res) => {
             }
         });
     }
+});
+
+//display Dashboard
+router.get('/displaydashboard/:dashId', (req, res) => {
+
+    var dashId = req.params.dashId;
+
+    var sql = 'SELECT * FROM dashboard WHERE dashId=?';
+
+    connection.query(sql, [dashId], function (err, result) {
+        if (err) {
+            sendError(err, res);
+        }
+        else {
+            sendResponse(result, res);
+        }
+    });
+});
+
+//approve dashboard
+router.get('/approvedashboard/:dashId', (req, res) => {
+
+    var dashId = req.params.dashId;
+    var status = "Approved";
+
+    var sql = 'UPDATE dashboard SET status=? WHERE dashId=?';
+
+    connection.query(sql, [status, dashId], function (err, result) {
+        if (err) {
+            sendError(err, res);
+        }
+        else {
+            sendResponse(result, res);
+        }
+    });
+});
+
+//Update dashboard
+router.post('/updatedashboard', (req, res) => {
+    var dashId = req.body.dashId;
+    var category = req.body.category;
+    var dname = req.body.dname;
+    var ddesc = req.body.ddesc;
+    var dlink = req.body.dlink;
+    var uusers = req.body.uusers;
+    var views = req.body.views;
+    var age = req.body.age;
+    var imageuri = req.body.imageuri;
+    //var status = req.body.status;
+
+    var sql = 'UPDATE dashboard SET dashname=?, dashdesc=?, imguri=?, dashlink=?, catId=?, age=?, views=?, unique_users=? WHERE dashId=?';
+
+    connection.query(sql, [dname, ddesc, imageuri, dlink, category, age, views, uusers, dashId], function (err, result) {
+        if (err) {
+            sendError(err, res);
+        }
+        else {
+            sendResponse(result, res);
+        }
+    });
+});
+
+//delete dashboard
+router.get('/deletedashboard/:dashId', (req, res) => {
+
+    var dashId = req.params.dashId;
+
+    var sql = 'DELETE FROM dashboard WHERE dashId=?';
+
+    connection.query(sql, [dashId], function (err, result) {
+        if (err) {
+            sendError(err, res);
+        }
+        else {
+            sendResponse(result, res);
+        }
+    });
 });
 
 //count Favorites
@@ -359,6 +607,42 @@ router.post('/addfavorite', (req, res) => {
     });
 });
 
+// Add links to favorite
+router.post('/addlinkfavorite', (req, res) => {
+
+    var linkId = req.body.linkId;
+    var userId = req.body.userId;
+
+    var sql = 'INSERT INTO favoritelinks (userId, linkId) VALUES (?,?)';
+
+    connection.query(sql, [userId, linkId], function (err, result) {
+        if (err) {
+            sendError(err, res);
+        }
+        else {
+            sendResponse(result, res);
+        }
+    });
+});
+
+// Add material to favorite
+router.post('/addtrainingfavorite', (req, res) => {
+
+    var matid = req.body.matid;
+    var userId = req.body.userId;
+
+    var sql = 'INSERT INTO favoritematerial (userId, matid) VALUES (?,?)';
+
+    connection.query(sql, [userId, matid], function (err, result) {
+        if (err) {
+            sendError(err, res);
+        }
+        else {
+            sendResponse(result, res);
+        }
+    });
+});
+
 // Remove dashboard to favorite
 router.post('/removefavorite', (req, res) => {
 
@@ -368,6 +652,42 @@ router.post('/removefavorite', (req, res) => {
     var sql = 'DELETE FROM favorite WHERE dashId = ? AND userId = ?';
 
     connection.query(sql, [dashId, userId], function (err, result) {
+        if (err) {
+            sendError(err, res);
+        }
+        else {
+            sendResponse(result, res);
+        }
+    });
+});
+
+// Remove links to favorite
+router.post('/removelinkfavorite', (req, res) => {
+
+    var linkId = req.body.linkId;
+    var userId = req.body.userId;
+
+    var sql = 'DELETE FROM favoritelinks WHERE linkId = ? AND userId = ?';
+
+    connection.query(sql, [linkId, userId], function (err, result) {
+        if (err) {
+            sendError(err, res);
+        }
+        else {
+            sendResponse(result, res);
+        }
+    });
+});
+
+// Remove material to favorite
+router.post('/removetrainingfavorite', (req, res) => {
+
+    var matid = req.body.matid;
+    var userId = req.body.userId;
+
+    var sql = 'DELETE FROM favoritematerial WHERE matid = ? AND userId = ?';
+
+    connection.query(sql, [matid, userId], function (err, result) {
         if (err) {
             sendError(err, res);
         }
@@ -393,24 +713,6 @@ router.post('/adddashboard', (req, res) => {
     var sql = 'INSERT INTO dashboard (dashname, dashdesc, imguri, dashlink, status, catId, age, views, unique_users) VALUES (?,?,?,?,?,?,?,?,?)';
 
     connection.query(sql, [dname, ddesc, imageuri, dlink, status, category, age, views, uusers], function (err, result) {
-        if (err) {
-            sendError(err, res);
-        }
-        else {
-            sendResponse(result, res);
-        }
-    });
-});
-
-// Add Training
-router.post('/addtraining', (req, res) => {
-
-    var title = req.body.title;
-    var desc = req.body.desc;
-
-    var sql = 'call wn8nes4iprd.create_training(?, ?)';
-
-    connection.query(sql, [title, desc], function (err, result) {
         if (err) {
             sendError(err, res);
         }

@@ -19,6 +19,7 @@ export class AdminComponent implements OnInit {
   userLogOff()
   {
     sessionStorage.clear();
-    this._router.navigate(["/"]);
+    //this._router.navigate(["/"]);
+    location.reload();
   }
 }

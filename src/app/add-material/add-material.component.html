@@ -1,0 +1,69 @@
+<br>
+<div style="width: 90%;margin: 0 auto;">
+  <form #addT="ngForm" (ngSubmit)="addMaterial()">
+    <label for="category">
+      <b>Function</b>
+    </label>
+    <select name="category" required [(ngModel)]="category" (change)="onCategoryChange()">
+      <option *ngFor="let item of categoriesList" value="{{item.catId}}">{{item.catDesc}}</option>
+    </select>
+    <label for="training">
+      <b>Training</b>
+    </label>
+    <select name="training" required [(ngModel)]="training">
+      <option *ngFor="let item of trainingList" value="{{item.tid}}">{{item.title}}</option>
+    </select>
+
+    <div class="responsive-table">
+      <table class="table table--fixed">
+        <thead>
+          <tr>
+            <th style="width: 20%;">Type</th>
+            <th style="width: 20%;">Link Title</th>
+            <th style="width: 20%;">Description</th>
+            <th style="width: 20%;">Link URL</th>
+            <!-- <th style="width: 16%;">Recording Key</th> -->
+            <th style="width: 12%;"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of materialList; let i=index">
+            <td>
+              <select name="type{{i}}" required [(ngModel)]="item.mattype">
+                <option>Document</option>
+                <option>PPT</option>
+                <option>Webex Recording</option>
+              </select>
+            </td>
+            <td>
+              <input type="text" maxlength="100" required [(ngModel)]="item.mattitle" name="title{{i}}" placeholder="Title">
+            </td>
+            <td>
+              <input type="text" maxlength="1000" required [(ngModel)]="item.matdesc" name="desc{{i}}" placeholder="Description">
+            </td>
+            <td>
+              <input type="text" maxlength="1000" required [(ngModel)]="item.maturl" name="url{{i}}" placeholder="URL">
+            </td>
+            <!-- <td>
+              <input type="text" required id="key" name="key" placeholder="Password">
+            </td> -->
+            <td align="center">
+              <button type="button" (click)="deleteRow(i)">
+                <font color=#049fd9>
+                  <span class="icon-remove"></span>
+                </font>
+              </button>&nbsp;
+              <button type="button" (click)="addRow()">
+                <font color=#049fd9>
+                  <span class="icon-add"></span>
+                </font>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <br>
+    <button type="submit" class="btn btn--primary" data-dismiss="modal" [disabled]="!addT.form.valid">Add Training Material</button>
+  </form>
+</div>

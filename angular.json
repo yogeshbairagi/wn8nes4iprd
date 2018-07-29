@@ -25,9 +25,13 @@
             "styles": [
               "src/styles.css",
               "src/assets/css/cui-standard.min.css",
-              "src/assets/css/imageCardTile-style.css"
+              "src/assets/css/imageCardTile-style.css",
+              "src/assets/css/login.css"
             ],
-            "scripts": []
+            "scripts": [
+              "node_modules/jquery/dist/jquery.min.js",
+              "src/assets/scripts/styleguide.js"
+            ]
           },
           "configurations": {
             "production": {
