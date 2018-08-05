@@ -2,7 +2,7 @@
 <div style="width: 60%;margin: 0 auto;">
   <form #addL="ngForm" (ngSubmit)="addCategory()">
     <label for="catDesc">
-      <b>Enter Category Title</b>
+      <b>Enter New Role Title</b>
     </label>
     <input type="text" required maxlength="50" name="catDesc" placeholder="Category Title" [(ngModel)]="catDesc">
     <button type="submit" class="btn btn--primary" data-dismiss="modal" [disabled]="!addL.form.valid">Add Category</button>

@@ -1,28 +1,35 @@
 <br>
 <div style="width: 60%;margin: 0 auto;">
-<form #addU="ngForm" (ngSubmit)="userSignup()">
-  <label for="role">
-    <b>User Role</b>
-  </label>
-  <select name="role" [(ngModel)]="model.role">
-    <option *ngFor="let item of roleList" value="{{item.role}}">{{item.role}}</option>
-  </select>
+  <form #addU="ngForm" (ngSubmit)="userSignup()">
+    <label for="role">
+      <b>User Type</b>
+    </label>
+    <select name="role" [(ngModel)]="model.role">
+      <option *ngFor="let item of roleList" value="{{item.role}}">{{item.role}}</option>
+    </select>
 
-  <label for="fname">
-    <b>First Name</b>
-  </label>
-  <input type="text" required maxlength="45" name="fname" placeholder="First Name" [(ngModel)]="model.fname">
+    <label for="fname">
+      <b>First Name</b>
+    </label>
+    <input type="text" required maxlength="45" name="fname" placeholder="First Name" [(ngModel)]="model.fname">
 
-  <label for="lname">
-    <b>Last Name</b>
-  </label>
-  <input type="text" required maxlength="45" name="lname" placeholder="Last Name" [(ngModel)]="model.lname">
+    <label for="lname">
+      <b>Last Name</b>
+    </label>
+    <input type="text" required maxlength="45" name="lname" placeholder="Last Name" [(ngModel)]="model.lname">
 
-  <label for="uname">
-    <b>CEC Email</b>
-  </label>
-  <input type="text" required email maxlength="30" name="uname" placeholder="CEC Email" [(ngModel)]="model.userId">
+    <label for="uname">
+      <b>CEC Email Id</b>
+    </label>
+    <input type="text" required email maxlength="30" name="uname" placeholder="CEC Email" [(ngModel)]="model.userId">
 
-  <input type="submit" value="Add User" name="submit" [disabled]="!addU.form.valid">
-</form>
+    <label for="category">
+      <b>Role</b>
+    </label>
+    <select name="category" required [(ngModel)]="model.catId">
+      <option *ngFor="let item of categoriesList" value="{{item.catId}}">{{item.catDesc}}</option>
+    </select>
+
+    <input type="submit" value="Add User" name="submit" [disabled]="!addU.form.valid">
+  </form>
 </div>

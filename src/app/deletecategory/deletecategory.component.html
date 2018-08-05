@@ -1,0 +1,11 @@
+<br>
+<div style="width: 60%;margin: 0 auto;">
+  <form #searchL="ngForm" (ngSubmit)="deleteRole()">
+    <b>Select Role</b>
+    <select required name="role" [(ngModel)]="catId">
+      <option *ngFor="let item of categoriesList" value="{{item.catId}}">{{item.catDesc}}</option>
+    </select>
+
+    <button type="submit" class="btn btn--primary" data-dismiss="modal" [disabled]="!searchL.form.valid">Delete Role</button>
+  </form>
+</div>

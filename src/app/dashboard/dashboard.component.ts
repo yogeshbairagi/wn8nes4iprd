@@ -21,11 +21,24 @@ export class DashboardComponent implements OnInit {
   trainingData: any = [];
   reportList: any = [];
   toolList: any = [];
+  isUser: boolean = false;
+  isAdmin: boolean = false;
 
   constructor(private _router: Router, private _dataService: DataService) { }
 
   ngOnInit() {
     this.userFname = sessionStorage.fname;
+
+    if(sessionStorage.getItem("role") == "User")
+    {
+      this.isUser = true;
+      this.isAdmin = false;
+    }
+    else
+    {
+      this.isUser = false;
+      this.isAdmin = true;
+    }
 
     this._dataService.getFavoriteCount(sessionStorage.getItem("userId"))
       .subscribe(res => {
@@ -41,12 +54,12 @@ export class DashboardComponent implements OnInit {
                   this.dashboardList = res.data;
                 });
 
-              this._dataService.getLinksbycat(this.catId.toString(), "Reports", sessionStorage.getItem("userId"))
+              this._dataService.getLinksbycat(this.catId.toString(), "Reports", sessionStorage.getItem("userId"), "Approved")
                 .subscribe(res => {
                   this.reportList = res.data;
                 });
 
-              this._dataService.getLinksbycat(this.catId.toString(), "Tools", sessionStorage.getItem("userId"))
+              this._dataService.getLinksbycat(this.catId.toString(), "Tools", sessionStorage.getItem("userId"), "Approved")
                 .subscribe(res => {
                   this.toolList = res.data;
                 });
@@ -65,12 +78,12 @@ export class DashboardComponent implements OnInit {
                   this.dashboardList = res.data;
                 });
 
-              this._dataService.getLinksbycat(this.catId.toString(), "Reports", sessionStorage.getItem("userId"))
+              this._dataService.getLinksbycat(this.catId.toString(), "Reports", sessionStorage.getItem("userId"), "Approved")
                 .subscribe(res => {
                   this.reportList = res.data;
                 });
 
-              this._dataService.getLinksbycat(this.catId.toString(), "Tools", sessionStorage.getItem("userId"))
+              this._dataService.getLinksbycat(this.catId.toString(), "Tools", sessionStorage.getItem("userId"), "Approved")
                 .subscribe(res => {
                   this.toolList = res.data;
                 });
@@ -104,12 +117,12 @@ export class DashboardComponent implements OnInit {
 
     this._dataService.addLinkFavorite(item.linkId, sessionStorage.getItem("userId"))
       .subscribe(res => {
-        this._dataService.getLinksbycat(this.catId.toString(), "Reports", sessionStorage.getItem("userId"))
+        this._dataService.getLinksbycat(this.catId.toString(), "Reports", sessionStorage.getItem("userId"), "Approved")
           .subscribe(res => {
             this.reportList = res.data;
           });
 
-        this._dataService.getLinksbycat(this.catId.toString(), "Tools", sessionStorage.getItem("userId"))
+        this._dataService.getLinksbycat(this.catId.toString(), "Tools", sessionStorage.getItem("userId"), "Approved")
           .subscribe(res => {
             this.toolList = res.data;
           });
@@ -149,12 +162,12 @@ export class DashboardComponent implements OnInit {
 
     this._dataService.removeLinkFavorite(item.linkId, sessionStorage.getItem("userId"))
       .subscribe(res => {
-        this._dataService.getLinksbycat(this.catId.toString(), "Reports", sessionStorage.getItem("userId"))
+        this._dataService.getLinksbycat(this.catId.toString(), "Reports", sessionStorage.getItem("userId"), "Approved")
           .subscribe(res => {
             this.reportList = res.data;
           });
 
-        this._dataService.getLinksbycat(this.catId.toString(), "Tools", sessionStorage.getItem("userId"))
+        this._dataService.getLinksbycat(this.catId.toString(), "Tools", sessionStorage.getItem("userId"), "Approved")
           .subscribe(res => {
             this.toolList = res.data;
           });
@@ -209,7 +222,7 @@ export class DashboardComponent implements OnInit {
       document.getElementById("tab-dashboards-content").setAttribute("class", "tab-pane");
       document.getElementById("tab-training-content").setAttribute("class", "tab-pane");
 
-      this._dataService.getLinksbycat(this.catId.toString(), "Reports", sessionStorage.getItem("userId"))
+      this._dataService.getLinksbycat(this.catId.toString(), "Reports", sessionStorage.getItem("userId"), "Approved")
         .subscribe(res => {
           if (res.status !== 501) {
             this.reportList = res.data;
@@ -218,7 +231,7 @@ export class DashboardComponent implements OnInit {
             alert(res.message);
         });
 
-      this._dataService.getLinksbycat(this.catId.toString(), "Tools", sessionStorage.getItem("userId"))
+      this._dataService.getLinksbycat(this.catId.toString(), "Tools", sessionStorage.getItem("userId"), "Approved")
         .subscribe(res => {
           if (res.status !== 501) {
             this.toolList = res.data;

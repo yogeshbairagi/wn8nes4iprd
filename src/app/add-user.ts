@@ -5,6 +5,7 @@ export class AddUser {
         public lname: string,
         public role: string,
         public status: string,
-        public password: string
+        public password: string,
+        public catId: string
     ) { }
 }

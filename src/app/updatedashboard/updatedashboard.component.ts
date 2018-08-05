@@ -61,7 +61,7 @@ export class UpdatedashboardComponent implements OnInit {
       .subscribe(res => {
         if (res.status != 501) {
           if (res.data.length > 0) {
-            this.model = new AddDashboard('', '', '', '', 0, 0, 0, '', '');
+            this.model = new AddDashboard('', '', '', '', 0, 0, 0, '', '', null, null);
             this.model.category = res.data[0].catId;
             this.model.dname = res.data[0].dashname;
             this.model.ddesc = res.data[0].dashdesc;
@@ -70,6 +70,8 @@ export class UpdatedashboardComponent implements OnInit {
             this.model.views = res.data[0].views;
             this.model.age = res.data[0].age;
             this.model.imageuri = res.data[0].imguri;
+            this.model.addedby = res.data[0].addedby;
+            this.model.approvedby = res.data[0].approvedby;
             //this.model.image = res.data[0].dashname +".jpg";
             this.isFormVisible = true;
           }

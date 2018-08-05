@@ -96,6 +96,14 @@
                                                       <b>User ID</b>
                                                 </label>
                                                 <input type="text" required email maxlength="30" name="uname" placeholder="CEC Email" [(ngModel)]="umodel.userId">
+                                                
+                                                <label for="category">
+                                                      <b>Role</b>
+                                                </label>
+                                                <select name="category" required [(ngModel)]="umodel.catId">
+                                                      <option *ngFor="let item of categoriesList" value="{{item.catId}}">{{item.catDesc}}</option>
+                                                </select>
+
                                                 <input type="submit" class="btn btn--primary" value="Sign up" name="submit" [disabled]="!addU.form.valid">
                                           </form>
                                     </div>

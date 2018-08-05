@@ -2,7 +2,7 @@
 <div style="width: 60%;margin: 0 auto;">
 <form #addL="ngForm" (ngSubmit)="addLinks()">
   <label for="category">
-    <b>Category</b>
+    <b>Role</b>
   </label>
   <select name="category" [(ngModel)]="model.catId">
     <option *ngFor="let item of categoriesList" value="{{item.catId}}">{{item.catDesc}}</option>

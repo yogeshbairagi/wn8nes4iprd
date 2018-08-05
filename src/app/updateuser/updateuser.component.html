@@ -18,7 +18,7 @@
 <div *ngIf="isFormVisible" style="width: 60%;margin: 0 auto;">
   <form #addU="ngForm" (ngSubmit)="updateUser()">
     <label for="role">
-      <b>User Role</b>
+      <b>User Type</b>
     </label>
     <select name="role" [(ngModel)]="model.role">
       <option *ngFor="let item of roleList" value="{{item.role}}">{{item.role}}</option>
@@ -35,9 +35,16 @@
     <input type="text" required maxlength="45" name="lname" placeholder="Last Name" [(ngModel)]="model.lname">
 
     <label for="uname">
-      <b>CEC Email</b>
+      <b>CEC Email Id</b>
     </label>
     <input type="text" required email maxlength="30" name="uname" placeholder="CEC Email" [(ngModel)]="model.userId" [disabled]="true">
+
+    <label for="category">
+      <b>Role</b>
+    </label>
+    <select name="category" required [(ngModel)]="model.catId">
+      <option *ngFor="let item of categoriesList" value="{{item.catId}}">{{item.catDesc}}</option>
+    </select>
     
     <div style="width: 60%;margin: 0 auto;">
       <button type="submit" value="update" class="btn btn--primary" data-dismiss="modal" [disabled]="!addU.form.valid">Update</button>

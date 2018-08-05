@@ -13,10 +13,17 @@ export class ApprovedashboardComponent implements OnInit {
   dashboardList: any = [];
   categoriesList: any = [];
   category: string = null;
+  isSuper: boolean = false;
+  isFilter: boolean = false;
 
   constructor(private _dataService: DataService) { }
 
   ngOnInit() {
+    if (sessionStorage.getItem("role") != "Admin")
+      this.isSuper = true;
+    else
+      this.isSuper = false;
+
     this._dataService.getCategories("drop")
       .subscribe(res => {
         if (res.status !== 501) {
@@ -26,7 +33,7 @@ export class ApprovedashboardComponent implements OnInit {
           alert(res.message);
       });
 
-    this._dataService.getDashboards(0, "Pending", sessionStorage.getItem("userId"))
+    this._dataService.getPendingDashboards(sessionStorage.getItem("catId"), "Pending", sessionStorage.getItem("role"))
       .subscribe(res => {
         this.dashboardList = res.data;
       });
@@ -65,11 +72,14 @@ export class ApprovedashboardComponent implements OnInit {
       .subscribe(res => {
         this.dashboardList = res.data;
       });
+
+    this.isFilter = true;
   }
 
   clearFilter() {
     this.category = null;
-    this._dataService.getDashboards(0, "Pending", sessionStorage.getItem("userId"))
+    this.isFilter = false;
+    this._dataService.getPendingDashboards(sessionStorage.getItem("catId"), "Pending", sessionStorage.getItem("role"))
       .subscribe(res => {
         this.dashboardList = res.data;
       });

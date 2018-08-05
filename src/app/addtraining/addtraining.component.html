@@ -2,7 +2,7 @@
 <div style="width: 60%;margin: 0 auto;">
   <form #addT="ngForm" (ngSubmit)="addTraining()">
     <label for="category">
-      <b>Function</b>
+      <b>Role</b>
     </label>
     <select name="category" required [(ngModel)]="model.category">
       <option *ngFor="let item of categoriesList" value="{{item.catId}}">{{item.catDesc}}</option>

@@ -1,7 +1,7 @@
 <br>
 <div style="width: 60%;margin: 0 auto;">
   <form #searchD="ngForm" (ngSubmit)="displayDetails()">
-    <b>Select Category</b>
+    <b>Role</b>
     <select required name="category" [(ngModel)]="category" (change)="onCategoryChange()">
       <option *ngFor="let item of categoriesList" value="{{item.catId}}">{{item.catDesc}}</option>
     </select>

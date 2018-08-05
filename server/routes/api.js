@@ -110,14 +110,34 @@ router.get('/getusers', (req, res) => {
     });
 });
 
-// Get Links by category
-router.get('/getlinks/:linkcategory', (req, res) => {
+// Get Links by Link Type
+router.get('/getlinks/:catId/:linkcategory/:status', (req, res) => {
 
+    var catId = parseInt(req.params.catId);
     var linkcategory = req.params.linkcategory;
+    var status = req.params.status;
 
-    var sql = 'SELECT * FROM links WHERE linkcategory = ? order by linktitle';
+    var sql = 'SELECT * FROM links WHERE catId = ? AND linkcategory = ? AND status = ? order by linktitle';
 
-    connection.query(sql, [linkcategory], function (err, result) {
+    connection.query(sql, [catId, linkcategory, status], function (err, result) {
+        if (err) {
+            sendError(err, res);
+        }
+        else {
+            sendResponse(result, res);
+        }
+    });
+});
+
+// Get Links by Category
+router.get('/getlinkscat/:catId/:status', (req, res) => {
+
+    var catId = parseInt(req.params.catId);
+    var status = req.params.status;
+
+    var sql = 'SELECT * FROM links WHERE catId = ? AND status = ? order by linktitle';
+
+    connection.query(sql, [catId, status], function (err, result) {
         if (err) {
             sendError(err, res);
         }
@@ -144,17 +164,18 @@ router.get('/getlinkbyid/:linkid', (req, res) => {
     });
 });
 
-// Get Links by Category and Type
-router.get('/getlinkbycat/:category/:type/:userId', (req, res) => {
+// Get Links for approval
+router.get('/getlinksforapproval/:catId/:status/:role', (req, res) => {
 
-    var category = parseInt(req.params.category);
-    var linkcategory = req.params.type;
-    var userId = req.params.userId;
+    var catId = parseInt(req.params.catId);
+    var status = req.params.status;
+    var role = req.params.role;
+    var sql;
 
-    if (category === 1) {
-        sql = "SELECT links.linkId, links.linktitle, links.linkdesc, links.linkurl, links.linkcategory, links.catId, favoritelinks.userId FROM links INNER JOIN favoritelinks ON links.linkId = favoritelinks.linkId WHERE linkcategory = ? AND userId = ? ORDER BY links.linktitle";
+    if (role == "Admin") {
+        sql = 'SELECT * FROM links WHERE catId = ? AND status = ?';
 
-        connection.query(sql, [linkcategory, userId], function (err, result) {
+        connection.query(sql, [catId, status], function (err, result) {
             if (err) {
                 sendError(err, res);
             }
@@ -164,9 +185,9 @@ router.get('/getlinkbycat/:category/:type/:userId', (req, res) => {
         });
     }
     else {
-        sql = "SELECT links.linkId, links.linktitle, links.linkdesc, links.linkurl, links.linkcategory, links.catId, favoritelinks.userId FROM links LEFT JOIN (SELECT * FROM favoritelinks where userId = ?) AS favoritelinks ON links.linkId = favoritelinks.linkId WHERE catId = ? AND linkcategory = ? ORDER BY links.linktitle";
+        sql = 'SELECT * FROM links WHERE status = ?';
 
-        connection.query(sql, [userId, category, linkcategory], function (err, result) {
+        connection.query(sql, [status], function (err, result) {
             if (err) {
                 sendError(err, res);
             }
@@ -175,17 +196,57 @@ router.get('/getlinkbycat/:category/:type/:userId', (req, res) => {
             }
         });
     }
+});
 
-    // var sql = 'SELECT * FROM links WHERE catId=? AND linkcategory=? order by linktitle';
+// Get Links for approval by Category
+router.get('/getlinksforapprovalcat/:catId/:status', (req, res) => {
 
-    // connection.query(sql, [category, linkcategory], function (err, result) {
-    //     if (err) {
-    //         sendError(err, res);
-    //     }
-    //     else {
-    //         sendResponse(result, res);
-    //     }
-    // });
+    var catId = parseInt(req.params.catId);
+    var status = req.params.status;
+    var sql = 'SELECT * FROM links WHERE catId = ? AND status = ?';
+
+    connection.query(sql, [catId, status], function (err, result) {
+        if (err) {
+            sendError(err, res);
+        }
+        else {
+            sendResponse(result, res);
+        }
+    });
+});
+
+// Get Links by Category and Type
+router.get('/getlinkbycat/:category/:type/:userId/:status', (req, res) => {
+
+    var category = parseInt(req.params.category);
+    var linkcategory = req.params.type;
+    var userId = req.params.userId;
+    var status = req.params.status;
+
+    if (category === 1) {
+        sql = "SELECT links.linkId, links.linktitle, links.linkdesc, links.linkurl, links.linkcategory, links.catId, favoritelinks.userId FROM links INNER JOIN favoritelinks ON links.linkId = favoritelinks.linkId WHERE linkcategory = ? AND userId = ? AND status = ? ORDER BY links.linktitle";
+
+        connection.query(sql, [linkcategory, userId, status], function (err, result) {
+            if (err) {
+                sendError(err, res);
+            }
+            else {
+                sendResponse(result, res);
+            }
+        });
+    }
+    else {
+        sql = "SELECT links.linkId, links.linktitle, links.linkdesc, links.linkurl, links.linkcategory, links.catId, favoritelinks.userId FROM links LEFT JOIN (SELECT * FROM favoritelinks where userId = ?) AS favoritelinks ON links.linkId = favoritelinks.linkId WHERE catId = ? AND linkcategory = ? AND status = ? ORDER BY links.linktitle";
+
+        connection.query(sql, [userId, category, linkcategory, status], function (err, result) {
+            if (err) {
+                sendError(err, res);
+            }
+            else {
+                sendResponse(result, res);
+            }
+        });
+    }
 });
 
 // Get Training by Category
@@ -214,7 +275,7 @@ router.get('/getmaterial/:category/:userId', (req, res) => {
     //var sql = 'SELECT training.tid, training.title, training.tdesc, material.matid, material.mattitle, material.matdesc, material.maturl, material.mattype FROM training inner join material where training.tid = material.tid and training.category = ? order by training.title, material.mattype, material.mattitle';
     if (category === 1) {
         //var sql = 'SELECT mat.tid, mat.title, mat.tdesc, mat.matid, mat.mattitle, mat.matdesc, mat.maturl, mat.mattype, favoritematerial.userId FROM (SELECT training.tid, training.title, training.tdesc, material.matid, material.mattitle, material.matdesc, material.maturl, material.mattype FROM training inner join material where training.tid = material.tid and training.category = ? order by training.title, material.mattype, material.mattitle) AS mat INNER JOIN favoritematerial ON mat.matid = favoritematerial.matid WHERE userId = ?';
-        
+
         var sql = 'SELECT training.tid, training.title, training.tdesc, mat.matid, mat.mattitle, mat.matdesc, mat.maturl, mat.mattype, mat.userId FROM training inner join (SELECT material.matid, material.mattitle, material.matdesc, material.maturl, material.tid, material.mattype, favoritematerial.userId from material inner join favoritematerial where material.matid = favoritematerial.matid and favoritematerial.userId = ?) as mat where training.tid = mat.tid ORDER BY training.title, mat.mattype, mat.mattitle';
 
         connection.query(sql, [userId], function (err, result) {
@@ -228,7 +289,7 @@ router.get('/getmaterial/:category/:userId', (req, res) => {
     }
     else {
         var sql = 'SELECT mat.tid, mat.title, mat.tdesc, mat.matid, mat.mattitle, mat.matdesc, mat.maturl, mat.mattype, favoritematerial.userId FROM (SELECT training.tid, training.title, training.tdesc, material.matid, material.mattitle, material.matdesc, material.maturl, material.mattype FROM training inner join material where training.tid = material.tid and training.category = ? order by training.title, material.mattype, material.mattitle) AS mat LEFT JOIN (SELECT * FROM favoritematerial where userId = ?) AS favoritematerial ON mat.matid = favoritematerial.matid';
-        
+
         connection.query(sql, [category, userId], function (err, result) {
             if (err) {
                 sendError(err, res);
@@ -248,8 +309,7 @@ router.get('/getrowspan/:category/:userId', (req, res) => {
 
     var sql;
 
-    if(category === 1)
-    {
+    if (category === 1) {
         sql = 'SELECT training.tid, training.title, count(*) as count FROM training inner join (SELECT material.matid, material.mattitle, material.matdesc, material.maturl, material.tid, material.mattype, favoritematerial.userId from material inner join favoritematerial where material.matid = favoritematerial.matid and favoritematerial.userId = ?) as mat where training.tid = mat.tid group by training.tid';
         connection.query(sql, [userId], function (err, result) {
             if (err) {
@@ -260,8 +320,7 @@ router.get('/getrowspan/:category/:userId', (req, res) => {
             }
         });
     }
-    else
-    {
+    else {
         sql = 'SELECT training.tid, training.title, count(*) as count FROM training inner join material where training.tid = material.tid and training.category = ? group by training.tid';
         connection.query(sql, [category], function (err, result) {
             if (err) {
@@ -302,6 +361,23 @@ router.post('/addcategory', (req, res) => {
     var sql = 'INSERT INTO categories (catDesc, visibleTo) VALUES (?, ?)';
 
     connection.query(sql, [catDesc, "All"], function (err, result) {
+        if (err) {
+            sendError(err, res);
+        }
+        else {
+            sendResponse(result, res);
+        }
+    });
+});
+
+// Delete Category
+router.post('/deletecategory', (req, res) => {
+
+    var catId = parseInt(req.body.catId);
+
+    var sql = 'DELETE FROM categories WHERE catId = ?';
+
+    connection.query(sql, [catId], function (err, result) {
         if (err) {
             sendError(err, res);
         }
@@ -360,19 +436,7 @@ router.get('/dashboards/:catId/:status/:userId', (req, res) => {
     var userId = req.params.userId;
     var sql;
 
-    if (catId === 0) {
-        sql = "SELECT * FROM dashboard WHERE status = ?";
-
-        connection.query(sql, [status], function (err, result) {
-            if (err) {
-                sendError(err, res);
-            }
-            else {
-                sendResponse(result, res);
-            }
-        });
-    }
-    else if (catId === 1) {
+    if (catId === 1) {
         sql = "SELECT dashboard.dashId, dashboard.dashname, dashboard.dashdesc, dashboard.imguri, dashboard.dashlink, dashboard.status, dashboard.catId, dashboard.age, dashboard.views, dashboard.unique_users, favorite.userId FROM dashboard INNER JOIN favorite ON dashboard.dashId = favorite.dashId WHERE status = ? AND userId = ? ORDER BY dashboard.views DESC";
 
         connection.query(sql, [status, userId], function (err, result) {
@@ -389,6 +453,40 @@ router.get('/dashboards/:catId/:status/:userId', (req, res) => {
         sql = "SELECT dashboard.dashId, dashboard.dashname, dashboard.dashdesc, dashboard.imguri, dashboard.dashlink, dashboard.status, dashboard.catId, dashboard.age, dashboard.views, dashboard.unique_users, fav.userId FROM dashboard LEFT JOIN (SELECT * FROM favorite where userId = ?) AS fav ON dashboard.dashId = fav.dashId WHERE catId = ? AND status = ? ORDER BY dashboard.views DESC";
 
         connection.query(sql, [userId, catId, status], function (err, result) {
+            if (err) {
+                sendError(err, res);
+            }
+            else {
+                sendResponse(result, res);
+            }
+        });
+    }
+});
+
+//Get Pending Dashboards
+router.get('/pendingdashboards/:catId/:status/:role', (req, res) => {
+
+    var catId = parseInt(req.params.catId);
+    var status = req.params.status;
+    var role = req.params.role;
+    var sql;
+
+    if (role === "Admin") {
+        sql = "SELECT * FROM dashboard WHERE status = ? AND catId = ?";
+
+        connection.query(sql, [status, catId], function (err, result) {
+            if (err) {
+                sendError(err, res);
+            }
+            else {
+                sendResponse(result, res);
+            }
+        });
+    }
+    else {
+        sql = "SELECT * FROM dashboard WHERE status = ?";
+
+        connection.query(sql, [status], function (err, result) {
             if (err) {
                 sendError(err, res);
             }
@@ -434,6 +532,25 @@ router.get('/approvedashboard/:dashId', (req, res) => {
     });
 });
 
+//approve Links
+router.get('/approvelinks/:linkid/:approvedby', (req, res) => {
+
+    var linkid = req.params.linkid;
+    var status = "Approved";
+    var approvedby = req.params.approvedby;
+
+    var sql = 'UPDATE links SET status=?, approvedby=? WHERE linkid=?';
+
+    connection.query(sql, [status, approvedby, linkid], function (err, result) {
+        if (err) {
+            sendError(err, res);
+        }
+        else {
+            sendResponse(result, res);
+        }
+    });
+});
+
 //Update dashboard
 router.post('/updatedashboard', (req, res) => {
     var dashId = req.body.dashId;
@@ -445,11 +562,13 @@ router.post('/updatedashboard', (req, res) => {
     var views = req.body.views;
     var age = req.body.age;
     var imageuri = req.body.imageuri;
+    var addedby = req.body.addedby;
+    var approvedby = req.body.approvedby;
     //var status = req.body.status;
 
-    var sql = 'UPDATE dashboard SET dashname=?, dashdesc=?, imguri=?, dashlink=?, catId=?, age=?, views=?, unique_users=? WHERE dashId=?';
+    var sql = 'UPDATE dashboard SET dashname=?, dashdesc=?, imguri=?, dashlink=?, catId=?, age=?, views=?, unique_users=?, addedby=?, approvedby=? WHERE dashId=?';
 
-    connection.query(sql, [dname, ddesc, imageuri, dlink, category, age, views, uusers, dashId], function (err, result) {
+    connection.query(sql, [dname, ddesc, imageuri, dlink, category, age, views, uusers, addedby, approvedby, dashId], function (err, result) {
         if (err) {
             sendError(err, res);
         }
@@ -467,6 +586,23 @@ router.get('/deletedashboard/:dashId', (req, res) => {
     var sql = 'DELETE FROM dashboard WHERE dashId=?';
 
     connection.query(sql, [dashId], function (err, result) {
+        if (err) {
+            sendError(err, res);
+        }
+        else {
+            sendResponse(result, res);
+        }
+    });
+});
+
+//delete links
+router.get('/deletelinks/:linkid', (req, res) => {
+
+    var linkid = req.params.linkid;
+
+    var sql = 'DELETE FROM dashboard WHERE linkid=?';
+
+    connection.query(sql, [linkid], function (err, result) {
         if (err) {
             sendError(err, res);
         }
@@ -537,10 +673,11 @@ router.post('/signup', (req, res) => {
     var role = req.body.role;
     var status = req.body.status;
     var password = req.body.password;
+    var catId = parseInt(req.body.catId);
 
-    var sql = 'INSERT INTO users (userId, fname, lname, role, status, password) VALUES (?,?,?,?,?,?)';
+    var sql = 'INSERT INTO users (userId, fname, lname, role, status, password, catId) VALUES (?,?,?,?,?,?,?)';
 
-    connection.query(sql, [email, fname, lname, role, status, password], function (err, result) {
+    connection.query(sql, [email, fname, lname, role, status, password, catId], function (err, result) {
         if (err) {
             sendError(err, res);
         }
@@ -559,10 +696,11 @@ router.post('/updateuser', (req, res) => {
     var role = req.body.role;
     var status = req.body.status;
     var password = req.body.password;
+    var catId = parseInt(req.body.catId);
 
-    var sql = 'UPDATE users SET userId=?, fname=?, lname=?, role=?, status=?, password=? WHERE userId=?';
+    var sql = 'UPDATE users SET userId=?, fname=?, lname=?, role=?, status=?, password=?, catId=? WHERE userId=?';
 
-    connection.query(sql, [email, fname, lname, role, status, password, email], function (err, result) {
+    connection.query(sql, [email, fname, lname, role, status, password, catId, email], function (err, result) {
         if (err) {
             sendError(err, res);
         }
@@ -709,10 +847,12 @@ router.post('/adddashboard', (req, res) => {
     var age = req.body.age;
     var imageuri = req.body.imageuri;
     var status = req.body.status;
+    var addedby = req.body.addedby;
+    var approvedby = req.body.approvedby;
 
-    var sql = 'INSERT INTO dashboard (dashname, dashdesc, imguri, dashlink, status, catId, age, views, unique_users) VALUES (?,?,?,?,?,?,?,?,?)';
+    var sql = 'INSERT INTO dashboard (dashname, dashdesc, imguri, dashlink, status, catId, age, views, unique_users, addedby, approvedby) VALUES (?,?,?,?,?,?,?,?,?,?,?)';
 
-    connection.query(sql, [dname, ddesc, imageuri, dlink, status, category, age, views, uusers], function (err, result) {
+    connection.query(sql, [dname, ddesc, imageuri, dlink, status, category, age, views, uusers, addedby, approvedby], function (err, result) {
         if (err) {
             sendError(err, res);
         }
@@ -730,10 +870,13 @@ router.post('/addlinks', (req, res) => {
     var linkurl = req.body.linkurl;
     var linkcategory = req.body.linkcategory;
     var catId = req.body.catId;
+    var status = req.body.status;
+    var addedby = req.body.addedby;
+    var approvedby = req.body.approvedby;
 
-    var sql = 'INSERT INTO links (linktitle, linkdesc, linkurl, linkcategory, catId) VALUES (?,?,?,?,?)';
+    var sql = 'INSERT INTO links (linktitle, linkdesc, linkurl, linkcategory, catId, status, addedby, approvedby) VALUES (?,?,?,?,?,?,?,?)';
 
-    connection.query(sql, [linktitle, linkdesc, linkurl, linkcategory, catId], function (err, result) {
+    connection.query(sql, [linktitle, linkdesc, linkurl, linkcategory, catId, status, addedby, approvedby], function (err, result) {
         if (err) {
             sendError(err, res);
         }
@@ -752,10 +895,13 @@ router.post('/updatelinks', (req, res) => {
     var linkcategory = req.body.linkcategory;
     var catId = req.body.catId;
     var linkid = req.body.linkid;
+    var status = req.body.status;
+    var addedby = req.body.addedby;
+    var approvedby = req.body.approvedby;
 
-    var sql = 'UPDATE links SET linktitle=?, linkdesc=?, linkurl=?, linkcategory=?, catId=? WHERE linkid=?';
+    var sql = 'UPDATE links SET linktitle=?, linkdesc=?, linkurl=?, linkcategory=?, catId=?, status=?, addedby=?, approvedby=? WHERE linkid=?';
 
-    connection.query(sql, [linktitle, linkdesc, linkurl, linkcategory, catId, linkid], function (err, result) {
+    connection.query(sql, [linktitle, linkdesc, linkurl, linkcategory, catId, status, addedby, approvedby, linkid], function (err, result) {
         if (err) {
             sendError(err, res);
         }

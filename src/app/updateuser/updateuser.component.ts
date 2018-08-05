@@ -14,6 +14,7 @@ import { AddUser } from '../add-user';
 export class UpdateuserComponent implements OnInit {
 
   roleList: any = [];
+  categoriesList: any = [];
   userList: any = [];
   model: AddUser;
   searchId = "";
@@ -31,6 +32,15 @@ export class UpdateuserComponent implements OnInit {
         else
           alert(res.message);
       });
+
+    this._dataService.getCategories("drop")
+      .subscribe(res => {
+        if (res.status !== 501) {
+          this.categoriesList = res.data;
+        }
+        else
+          alert(res.message);
+      });
   }
 
   searchUser() {
@@ -41,12 +51,13 @@ export class UpdateuserComponent implements OnInit {
       .subscribe(res => {
         if (res.status != 501) {
           if (res.data.length > 0) {
-            this.model = new AddUser('', '', '', '', '', '');
+            this.model = new AddUser('', '', '', '', '', '',null);
             this.model.userId = res.data[0].userId;
             this.model.fname = res.data[0].fname;
             this.model.lname = res.data[0].lname;
             this.model.role = res.data[0].role;
             this.model.status = res.data[0].status;
+            this.model.catId = res.data[0].catId;
             this.isFormVisible = true;
           }
           else

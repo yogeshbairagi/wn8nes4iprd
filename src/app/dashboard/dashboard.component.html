@@ -48,9 +48,14 @@
         </div>
 
         <div class="header-toolbar">
-          <a routerLink="/admin/approvedashboard" class="btn btn--icon">
+          <a *ngIf="isUser" routerLink="/user/adddashboard" class="btn btn--icon">
+            <span class="icon-admin" title="User Activities"></span>
+          </a>
+
+          <a *ngIf="isAdmin" routerLink="/admin/approvedashboard" class="btn btn--icon">
             <span class="icon-admin" title="Admin Activities"></span>
           </a>
+
           <a [routerLink]="" (click)="userLogOff()" class="btn btn--icon">
             <span class="icon-sign-out" title="Log Out"></span>
           </a>

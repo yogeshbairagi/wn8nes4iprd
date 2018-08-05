@@ -2,7 +2,7 @@
 <div style="width: 60%;margin: 0 auto;">
   <form #addDash="ngForm" (ngSubmit)="addDashboard()">
     <label for="category">
-      <b>Function</b>
+      <b>Role</b>
     </label>
     <select name="category" [(ngModel)]="model.category">
       <option *ngFor="let item of categoriesList" value="{{item.catId}}">{{item.catDesc}}</option>
@@ -21,18 +21,19 @@
       <b>Dashboard Link</b>
     </label>
     <input type="text" required maxlength="200" name="dlink" placeholder="Dashboard Link" [(ngModel)]="model.dlink">
-    <label for="u_users">
+    
+    <label *ngIf="isAdmin" for="u_users">
       <b>Dashboard's no. of unique users</b>
     </label>
-    <input type="number" required name="uusers" placeholder="Dashboard's no. of unique users" [(ngModel)]="model.uusers">
-    <label for="views">
+    <input *ngIf="isAdmin" type="number" required name="uusers" placeholder="Dashboard's no. of unique users" [(ngModel)]="model.uusers">
+    <label *ngIf="isAdmin" for="views">
       <b>Dashboard's no. of views</b>
     </label>
-    <input type="number" required name="views" placeholder="Dashboard's no. of views" [(ngModel)]="model.views">
-    <label for="age">
+    <input *ngIf="isAdmin" type="number" required name="views" placeholder="Dashboard's no. of views" [(ngModel)]="model.views">
+    <label *ngIf="isAdmin" for="age">
       <b>Dashboard's age in months</b>
     </label>
-    <input type="number" required name="age" placeholder="Dashboard's age" [(ngModel)]="model.age">
+    <input *ngIf="isAdmin" type="number" required name="age" placeholder="Dashboard's age" [(ngModel)]="model.age">
 
     <label for="fileToUpload">
       <b>Dashboard's image</b>

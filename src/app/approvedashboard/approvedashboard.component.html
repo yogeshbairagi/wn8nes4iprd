@@ -1,12 +1,22 @@
 <div class="section">
   <div>
     <h4>List of Dashboard's Add requests</h4>
-    <br>
-    <label for="category">Filter by Category: </label>
-    <select name="category" [(ngModel)]="category" (change)="onCategoryChange()">
-      <option *ngFor="let item of categoriesList" value="{{item.catId}}">{{item.catDesc}}</option>
-    </select>
-    &nbsp;<button type="button" value="reset" class="btn btn--primary" data-dismiss="modal" (click)="clearFilter()">Reset Filter</button>
+    <br *ngIf="dashboardList.length == 0">
+    <div *ngIf="isSuper">
+      <label for="category">Filter by Role: </label>
+      <select name="category" [(ngModel)]="category" (change)="onCategoryChange()">
+        <option *ngFor="let item of categoriesList" value="{{item.catId}}">{{item.catDesc}}</option>
+      </select>
+      &nbsp;
+      <button type="button" value="reset" class="btn btn--primary" data-dismiss="modal" [disabled]="!isFilter" (click)="clearFilter()">Reset Filter</button>
+    </div>
+
+    <br *ngIf="dashboardList.length == 0">
+    <font *ngIf="dashboardList.length == 0" color="green">
+      <b>
+        <span>No Pending Requests.</span>
+      </b>
+    </font>
 
     <!-- <p>Requires the Standard Package</p> -->
     <div class="row base-margin-top">

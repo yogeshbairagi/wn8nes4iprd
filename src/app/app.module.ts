@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import {FileUploadModule} from 'ng2-file-upload';
+import { FileUploadModule } from 'ng2-file-upload';
 
 import { AppComponent } from './app.component';
 import { FormsModule } from '@angular/forms';
@@ -24,6 +24,9 @@ import { UpdatelinksComponent } from './updatelinks/updatelinks.component';
 import { ChangePasswordComponent } from './change-password/change-password.component';
 import { AddtrainingComponent } from './addtraining/addtraining.component';
 import { AddMaterialComponent } from './add-material/add-material.component';
+import { UserComponent } from './user/user.component';
+import { DeletecategoryComponent } from './deletecategory/deletecategory.component';
+import { ApprovelinksComponent } from './approvelinks/approvelinks.component';
 
 const appRoutes: Routes = [
   {
@@ -33,18 +36,7 @@ const appRoutes: Routes = [
   {
     path: 'dashboard',
     canActivate: [AuthGuard],
-    component: DashboardComponent,
-    children: [
-      {
-        path: 'links',
-        component: AdddashboardComponent,
-        outlet: 'link'
-      },
-      {
-        path: 'training',
-        component: AdddashboardComponent
-      }
-    ]
+    component: DashboardComponent
   },
   {
     path: 'admin',
@@ -76,12 +68,47 @@ const appRoutes: Routes = [
         component: AddcategoryComponent
       },
       {
+        path: 'deletecategory',
+        component: DeletecategoryComponent
+      },
+      {
         path: 'addlinks',
         component: AddlinksComponent
       },
       {
         path: 'updatelinks',
         component: UpdatelinksComponent
+      },
+      {
+        path: 'approvelinks',
+        component: ApprovelinksComponent
+      },
+      {
+        path: 'changepassword',
+        component: ChangePasswordComponent
+      },
+      {
+        path: 'addtraining',
+        component: AddtrainingComponent
+      },
+      {
+        path: 'addmaterial',
+        component: AddMaterialComponent
+      }
+    ]
+  },
+  {
+    path: 'user',
+    canActivate: [AuthGuard],
+    component: UserComponent,
+    children: [
+      {
+        path: 'adddashboard',
+        component: AdddashboardComponent
+      },
+      {
+        path: 'addlinks',
+        component: AddlinksComponent
       },
       {
         path: 'changepassword',
@@ -115,7 +142,10 @@ const appRoutes: Routes = [
     UpdatelinksComponent,
     ChangePasswordComponent,
     AddtrainingComponent,
-    AddMaterialComponent
+    AddMaterialComponent,
+    UserComponent,
+    DeletecategoryComponent,
+    ApprovelinksComponent
   ],
   imports: [
     BrowserModule,

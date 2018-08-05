@@ -49,23 +49,43 @@ export class DataService {
       .pipe(map(result => this.result = result.json()));
   }
 
-  getLinks(ltype: string) {
-    return this._http.get("/api/getlinks/" + ltype)
+  getLinks(catId:string, ltype: string, status: string) {
+    return this._http.get("/api/getlinks/" + catId + "/" + ltype + "/" + status)
+      .pipe(map(result => this.result = result.json()));
+  }
+
+  getLinksCat(catId:string, status: string) {
+    return this._http.get("/api/getlinkscat/" + catId + "/" + status)
       .pipe(map(result => this.result = result.json()));
   }
 
   getLinksbyId(linkid: string) {
-    return this._http.get("/api/getlinkbyid/" + linkid)
+    return this._http.get("/api/getlinkbyid/" + linkid + "/" + status)
       .pipe(map(result => this.result = result.json()));
   }
 
-  getLinksbycat(category: string, type: string, userId: string) {
-    return this._http.get("/api/getlinkbycat/" + category + "/" + type + "/" + userId)
+  getLinksbycat(category: string, type: string, userId: string, status: string) {
+    return this._http.get("/api/getlinkbycat/" + category + "/" + type + "/" + userId + "/" + status)
+      .pipe(map(result => this.result = result.json()));
+  }
+
+  getLinksForApproval(catId: string, status: string, role: string) {
+    return this._http.get("/api/getlinksforapproval/" + catId + "/" + status + "/" + role)
+      .pipe(map(result => this.result = result.json()));
+  }
+
+  getLinksForApprovalcat(catId: string, status: string) {
+    return this._http.get("/api/getlinksforapprovalcat/" + catId + "/" + status)
       .pipe(map(result => this.result = result.json()));
   }
 
   getDashboards(catId, status, userId) {
     return this._http.get("/api/dashboards/" + catId + "/" + status + "/" + userId)
+      .pipe(map(result => this.result = result.json()));
+  }
+
+  getPendingDashboards(catId, status, role) {
+    return this._http.get("/api/pendingdashboards/" + catId + "/" + status + "/" + role)
       .pipe(map(result => this.result = result.json()));
   }
 
@@ -81,6 +101,16 @@ export class DataService {
 
   deleteDashboard(dashId) {
     return this._http.get("/api/deletedashboard/" + dashId)
+      .pipe(map(result => this.result = result.json()));
+  }
+
+  approveLinks(linkid, approvedby) {
+    return this._http.get("/api/approvelinks/" + linkid + "/" + approvedby)
+      .pipe(map(result => this.result = result.json()));
+  }
+
+  deleteLinks(linkid, approvedby) {
+    return this._http.get("/api/deletelinks/" + linkid)
       .pipe(map(result => this.result = result.json()));
   }
 
@@ -157,7 +187,8 @@ export class DataService {
       "uname": model.userId.trim(),
       "role": model.role,
       "status": model.status,
-      "password": model.password
+      "password": model.password,
+      "catId": model.catId
     })
       .pipe(map(result => this.result = result.json()));
   }
@@ -170,7 +201,8 @@ export class DataService {
       "uname": model.userId.trim(),
       "role": model.role,
       "status": model.status,
-      "password": model.password
+      "password": model.password,
+      "catId": model.catId
     })
       .pipe(map(result => this.result = result.json()));
   }
@@ -196,11 +228,11 @@ export class DataService {
 
     var status: string;
 
-    if (user === "Admin") {
-      status = "Approved";
+    if (user === "User") {
+      status = "Pending";
     }
     else {
-      status = "Pending"
+      status = "Approved"
     }
 
     return this._http.post("/api/adddashboard", {
@@ -212,7 +244,9 @@ export class DataService {
       "views": model.views,
       "age": model.age,
       "imageuri": model.imageuri,
-      "status": status
+      "status": status,
+      "addedby": model.addedby,
+      "approvedby": model.approvedby
     })
       .pipe(map(result => this.result = result.json()));
   }
@@ -228,7 +262,9 @@ export class DataService {
       "uusers": model.uusers,
       "views": model.views,
       "age": model.age,
-      "imageuri": model.imageuri
+      "imageuri": model.imageuri,
+      "addedby": model.addedby,
+      "approvedby": model.approvedby
     })
       .pipe(map(result => this.result = result.json()));
   }
@@ -240,7 +276,10 @@ export class DataService {
       "linkdesc": model.linkdesc.trim(),
       "linkurl": model.linkurl.trim(),
       "linkcategory": model.linkcategory,
-      "catId": parseInt(model.catId)
+      "catId": parseInt(model.catId),
+      "status": model.status,
+      "addedby": model.addedby,
+      "approvedby": model.approvedby
     })
       .pipe(map(result => this.result = result.json()));
   }
@@ -248,6 +287,13 @@ export class DataService {
   addCategory(catDesc: string) {
     return this._http.post("/api/addcategory", {
       "catDesc": catDesc.trim()
+    })
+      .pipe(map(result => this.result = result.json()));
+  }
+
+  deleteCategory(catId: string) {
+    return this._http.post("/api/deletecategory", {
+      "catId": catId
     })
       .pipe(map(result => this.result = result.json()));
   }
@@ -276,7 +322,10 @@ export class DataService {
       "linkurl": model.linkurl.trim(),
       "linkcategory": model.linkcategory,
       "catId": parseInt(model.catId),
-      "linkid": model.linkid
+      "linkid": model.linkid,
+      "status": model.status,
+      "addedby": model.addedby,
+      "approvedby": model.approvedby
     })
       .pipe(map(result => this.result = result.json()));
   }

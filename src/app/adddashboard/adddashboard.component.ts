@@ -17,7 +17,9 @@ export class AdddashboardComponent implements OnInit {
   uploader: FileUploader = new FileUploader({ url: "/api/upload" });
   attachmentList: any = [];
   categoriesList: any = [];
-  model = new AddDashboard('2', '', '', '', 0, 0, 0, '', '');
+  model = new AddDashboard('2', '', '', '', 0, 0, 0, '', '', null, null);
+  isUser: boolean = false;
+  isAdmin: boolean = false;
 
   constructor(private _dataService: DataService) {
     this.uploader.onCompleteItem = (item: any, response: any, status: any, headers: any) => {
@@ -27,6 +29,21 @@ export class AdddashboardComponent implements OnInit {
 
   ngOnInit() {
     var that = this;
+
+    if(sessionStorage.getItem("role") == "User")
+    {
+      this.isUser = true;
+      this.isAdmin = false;
+      this.model.addedby = sessionStorage.getItem("userId");
+    }
+    else
+    {
+      this.isUser = false;
+      this.isAdmin = true;
+      this.model.addedby = sessionStorage.getItem("userId");
+      this.model.approvedby = sessionStorage.getItem("userId");
+    }
+
     this._dataService.getCategories("drop")
       .subscribe(res => {
         if (res.status !== 501) {
@@ -39,10 +56,10 @@ export class AdddashboardComponent implements OnInit {
 
   addDashboard() {
     if (this.model.imageuri != '') {
-      this._dataService.addDasboard(this.model, "Admin")
+      this._dataService.addDasboard(this.model, sessionStorage.getItem("role"))
         .subscribe(res => {
           if (res.status !== 501) {
-            this.model = new AddDashboard('2', '', '', '', 0, 0, 0, '', '');
+            this.model = new AddDashboard('2', '', '', '', 0, 0, 0, '', '', null, null);
             alert("Dashboard added successfully.");
           }
           else {

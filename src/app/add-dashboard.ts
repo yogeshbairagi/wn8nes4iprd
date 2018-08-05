@@ -8,6 +8,8 @@ export class AddDashboard {
         public views: number,
         public age: number,
         public image: string,
-        public imageuri: string
+        public imageuri: string,
+        public addedby: string,
+        public approvedby: string
     ) { }
 }

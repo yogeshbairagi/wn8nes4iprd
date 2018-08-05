@@ -97,6 +97,11 @@ $(document).ready(function () {
         $(this).parent().addClass('sidebar__item--selected');
     });
 
+    // sidebar drawer open/close toggles which are not in main
+    $('.sidebar__drawer > a').click(function () {
+        $(this).parent().toggleClass('sidebar__drawer--opened');
+    });
+
     // Wire the sidebar examples
     $('main .sidebar__drawer > a').click(function () {
         $(this).parent().toggleClass('sidebar__drawer--opened');

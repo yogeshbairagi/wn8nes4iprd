@@ -14,15 +14,25 @@ import { AddUser } from '../add-user';
 export class AdduserComponent implements OnInit {
 
   roleList: any = [];
-  model = new AddUser('','','','User','','');
+  categoriesList: any = [];
+  model = new AddUser('', '', '', 'User', '', '', '3');
 
   constructor(private _dataService: DataService) { }
 
   ngOnInit() {
     this._dataService.getUserRoles()
       .subscribe(res => {
-        if(res.status != 501)
+        if (res.status != 501)
           this.roleList = res.data;
+        else
+          alert(res.message);
+      });
+
+    this._dataService.getCategories("drop")
+      .subscribe(res => {
+        if (res.status !== 501) {
+          this.categoriesList = res.data;
+        }
         else
           alert(res.message);
       });
@@ -30,18 +40,16 @@ export class AdduserComponent implements OnInit {
 
   userSignup() {
 
-    if(this.model.role == "Admin")
-    {
-      this.model.password = "admin";
+    if (this.model.role == "Admin") {
+      this.model.password = "cisco";
     }
 
     this.model.status = "Active";
-    
+
     this._dataService.userSignup(this.model)
       .subscribe(res => {
-        if (res.status != 501)
-        {
-          this.model = new AddUser('','','','User','','');
+        if (res.status != 501) {
+          this.model = new AddUser('', '', '', 'User', '', '', '3');
           alert("User successfully added.");
         }
         else

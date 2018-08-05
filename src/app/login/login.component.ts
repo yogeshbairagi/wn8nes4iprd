@@ -17,7 +17,8 @@ import { AddUser } from '../add-user';
 export class LoginComponent implements OnInit {
 
   model = new UserLogin('', '', false, false, true, false);
-  umodel = new AddUser('','','','User','',null);
+  umodel = new AddUser('', '', '', 'User', '', null, '3');
+  categoriesList: any = [];
 
   // Create an instance of the DataService, Router through dependency injection
   constructor(private _dataService: DataService, private _router: Router) {
@@ -25,6 +26,15 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit() {
+    this._dataService.getCategories("drop")
+      .subscribe(res => {
+        if (res.status !== 501) {
+          this.categoriesList = res.data;
+        }
+        else
+          alert(res.message);
+      });
+
     if (sessionStorage.length)
       this._router.navigate(["dashboard"]);
   }
@@ -32,12 +42,11 @@ export class LoginComponent implements OnInit {
   userSignup() {
 
     this.umodel.status = "Active";
-    
+
     this._dataService.userSignup(this.umodel)
       .subscribe(res => {
-        if (res.status != 501)
-        {
-          this.umodel = new AddUser('','','','User','',null);
+        if (res.status != 501) {
+          this.umodel = new AddUser('', '', '', 'User', '', null, '3');
           alert("User successfully added.");
         }
         else
@@ -58,6 +67,7 @@ export class LoginComponent implements OnInit {
             sessionStorage.setItem("lname", res.data[0].lname);
             sessionStorage.setItem("role", res.data[0].role);
             sessionStorage.setItem("status", res.data[0].status);
+            sessionStorage.setItem("catId", res.data[0].catId);
             this._router.navigate(["dashboard"]);
           }
           else {
@@ -72,14 +82,12 @@ export class LoginComponent implements OnInit {
     //this.users[0].userId
   }
 
-  onLoginClick()
-  {
+  onLoginClick() {
     this.model = new UserLogin('', '', false, false, true, false);
   }
 
-  onRegisterClick()
-  {
-    this.umodel = new AddUser('','','','User','',null);
+  onRegisterClick() {
+    this.umodel = new AddUser('', '', '', 'User', '', null, '3');
   }
 
   userCheck() {
@@ -100,6 +108,7 @@ export class LoginComponent implements OnInit {
               sessionStorage.setItem("lname", res.data[0].lname);
               sessionStorage.setItem("role", res.data[0].role);
               sessionStorage.setItem("status", res.data[0].status);
+              sessionStorage.setItem("catId", res.data[0].catId);
               this._router.navigate(["dashboard"]);
             }
           }

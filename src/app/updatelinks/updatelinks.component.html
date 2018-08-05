@@ -1,14 +1,19 @@
 <br>
 <div style="width: 60%;margin: 0 auto;">
   <form #searchL="ngForm" (ngSubmit)="searchLink()">
-    <b>Select Link Type</b>
-    <select name="type" [(ngModel)]="ltype" (change)="onTypeChange()">
+    <b>Select Role</b>
+    <select required name="category" [(ngModel)]="catId" (change)="onCategoryChange()">
+      <option *ngFor="let item of categoriesList" value="{{item.catId}}">{{item.catDesc}}</option>
+    </select>
+
+    <b *ngIf="isTypeVisible">Select Link Type</b>
+    <select *ngIf="isTypeVisible" name="type" [(ngModel)]="ltype" (change)="onTypeChange()">
       <option value="Reports">Reports</option>
       <option value="Tools">Tools</option>
     </select>
 
     <b>Select Link Title</b>
-    <select required name="title" [(ngModel)]="searchId">
+    <select required name="title" [(ngModel)]="searchId" (change)="onTitleChange()">
       <option *ngFor="let item of linkList" value="{{item.linkid}}">{{item.linktitle}}</option>
     </select>
 
@@ -19,7 +24,7 @@
 <div *ngIf="isFormVisible" style="width: 60%;margin: 0 auto;">
   <form #addL="ngForm" (ngSubmit)="updateLink()">
     <label for="category">
-      <b>Category</b>
+      <b>Role</b>
     </label>
     <select name="category" [(ngModel)]="model.catId">
       <option *ngFor="let item of categoriesList" value="{{item.catId}}">{{item.catDesc}}</option>
