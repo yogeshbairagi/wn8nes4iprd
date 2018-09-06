@@ -1,0 +1,60 @@
+<div class="section">
+  <div>
+    <h4>List of Training Material's Add requests</h4>
+    <br>
+    <div *ngIf="isSuper">
+      <label for="category">Filter by Role: </label>
+      <select name="category" [(ngModel)]="catId" (change)="onCategoryChange()">
+        <option *ngFor="let item of categoriesList" value="{{item.catId}}">{{item.catDesc}}</option>
+      </select>
+      &nbsp;
+      <button type="button" value="reset" class="btn btn--primary" data-dismiss="modal" [disabled]="!isFilter" (click)="clearFilter()">Reset Filter</button>
+    </div>
+
+    <br>
+
+    <font *ngIf="materialList.length == 0" color="green">
+      <b>
+        <span>No Pending Requests.</span>
+      </b>
+    </font>
+
+    <div *ngIf="materialList.length > 0" class="responsive-table">
+      <table class="table table--fixed">
+        <thead>
+          <tr>
+            <th style="width: 22%;">Material Type</th>
+            <th style="width: 22%;">Material Title</th>
+            <th style="width: 36%;">Description</th>
+            <th style="width: 12%;"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of materialList">
+            <td>
+              {{item.mattype}}
+            </td>
+            <td>
+              <a href="{{item.maturl}}" target="_blank">{{item.mattitle}}</a>
+            </td>
+            <td>
+              {{item.matdesc}}
+            </td>
+            <td align="center">
+              <button type="button" (click)="approveMaterial(item)">
+                <font color=#049fd9>
+                  <span class="icon-check"></span>
+                </font>
+              </button>&nbsp;
+              <button type="button" (click)="rejectMaterial(item)">
+                <font color=#049fd9>
+                  <span class="icon-close"></span>
+                </font>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

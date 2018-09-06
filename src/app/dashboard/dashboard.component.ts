@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from "@angular/router";
 
+declare var $: any;
+
 // Import the DataService
 import { DataService } from '../data.service';
 
@@ -27,7 +29,13 @@ export class DashboardComponent implements OnInit {
   constructor(private _router: Router, private _dataService: DataService) { }
 
   ngOnInit() {
-    this.userFname = sessionStorage.fname;
+
+    // $('.sidebar__item').click(function () {
+    //   $(this).parent().siblings().removeClass('sidebar__item--selected');
+    //   $(this).parent().addClass('sidebar__item--selected');
+    // });
+
+    this.userFname = sessionStorage.getItem("fname");
 
     if(sessionStorage.getItem("role") == "User")
     {
@@ -256,7 +264,7 @@ export class DashboardComponent implements OnInit {
   getMaterialList() {
     this.trainingData = [];
 
-    this._dataService.getMaterial(this.catId.toString(), sessionStorage.getItem("userId"))
+    this._dataService.getMaterial(this.catId.toString(), sessionStorage.getItem("userId"), "Approved")
       .subscribe(res => {
         if (res.status !== 501) {
           this.trainingList = res.data;

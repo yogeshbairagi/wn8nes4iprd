@@ -14,7 +14,7 @@ import { AddTraining } from '../add-training';
 export class AddtrainingComponent implements OnInit {
 
   categoriesList: any = [];
-  model = new AddTraining(null, null, null);
+  model = new AddTraining(null, null, null, null, null, null);
 
   constructor(private _dataService: DataService) { }
 
@@ -30,10 +30,21 @@ export class AddtrainingComponent implements OnInit {
   }
 
   addTraining() {
+
+    if (sessionStorage.getItem("role") == "User") { 
+      this.model.status = "Pending";
+      this.model.addedby = sessionStorage.getItem("userId");
+    }
+    else { 
+      this.model.status = "Approved";
+      this.model.addedby = sessionStorage.getItem("userId");
+      this.model.approvedby = sessionStorage.getItem("userId");
+    }
+
     this._dataService.addTraining(this.model)
       .subscribe(res => {
         if (res.status != 501) {
-          this.model = new AddTraining(null, null, null);
+          this.model = new AddTraining(null, null, null, null, null, null);
           alert("Training added successfully.");
         }
         else

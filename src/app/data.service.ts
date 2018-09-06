@@ -29,13 +29,13 @@ export class DataService {
       .pipe(map(result => this.result = result.json()));
   }
 
-  getTraining(category: string) {
-    return this._http.get("/api/training/" + category)
+  getTraining(category: string, status: string) {
+    return this._http.get("/api/training/" + category + "/" + status)
       .pipe(map(result => this.result = result.json()));
   }
 
-  getMaterial(category: string, userId: string) {
-    return this._http.get("/api/getmaterial/" + category + "/" + userId)
+  getMaterial(category: string, userId: string, status: string) {
+    return this._http.get("/api/getmaterial/" + category + "/" + userId + "/" + status)
       .pipe(map(result => this.result = result.json()));
   }
 
@@ -79,6 +79,26 @@ export class DataService {
       .pipe(map(result => this.result = result.json()));
   }
 
+  getTrainingForApproval(catId: string, status: string, role: string) {
+    return this._http.get("/api/gettrainingforapproval/" + catId + "/" + status + "/" + role)
+      .pipe(map(result => this.result = result.json()));
+  }
+
+  getTrainingForApprovalcat(catId: string, status: string) {
+    return this._http.get("/api/gettrainingforapprovalcat/" + catId + "/" + status)
+      .pipe(map(result => this.result = result.json()));
+  }
+
+  getMaterialForApproval(catId: string, status: string, role: string) {
+    return this._http.get("/api/getmaterialforapproval/" + catId + "/" + status + "/" + role)
+      .pipe(map(result => this.result = result.json()));
+  }
+
+  getMaterialForApprovalcat(catId: string, status: string) {
+    return this._http.get("/api/getmaterialforapprovalcat/" + catId + "/" + status)
+      .pipe(map(result => this.result = result.json()));
+  }
+
   getDashboards(catId, status, userId) {
     return this._http.get("/api/dashboards/" + catId + "/" + status + "/" + userId)
       .pipe(map(result => this.result = result.json()));
@@ -111,6 +131,26 @@ export class DataService {
 
   deleteLinks(linkid, approvedby) {
     return this._http.get("/api/deletelinks/" + linkid)
+      .pipe(map(result => this.result = result.json()));
+  }
+
+  approveTraining(tid, approvedby) {
+    return this._http.get("/api/approvetraining/" + tid + "/" + approvedby)
+      .pipe(map(result => this.result = result.json()));
+  }
+
+  deleteTraining(tid) {
+    return this._http.get("/api/deletetraining/" + tid)
+      .pipe(map(result => this.result = result.json()));
+  }
+
+  approveMaterial(matid, approvedby) {
+    return this._http.get("/api/approvematerial/" + matid + "/" + approvedby)
+      .pipe(map(result => this.result = result.json()));
+  }
+
+  deleteMaterial(matid) {
+    return this._http.get("/api/deletematerial/" + matid)
       .pipe(map(result => this.result = result.json()));
   }
 
@@ -302,7 +342,10 @@ export class DataService {
     return this._http.post("/api/addtraining", {
       "title": model.title.trim(),
       "desc": model.desc.trim(),
-      "category": parseInt(model.category.trim())
+      "category": parseInt(model.category.trim()),
+      "status": model.status,
+      "addedby": model.addedby,
+      "approvedby": model.approvedby
     })
       .pipe(map(result => this.result = result.json()));
   }

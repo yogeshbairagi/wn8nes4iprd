@@ -12,7 +12,7 @@ export class UserComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    this.userFname = sessionStorage.fname;
+    this.userFname = sessionStorage.getItem("fname");
   }
 
   userLogOff()

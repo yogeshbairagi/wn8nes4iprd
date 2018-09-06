@@ -49,7 +49,7 @@
                                                 </label>
                                                 <input *ngIf="model.pwdshow" type="password" required maxlength="15" name="pwd" placeholder="*******" [(ngModel)]="model.password">
 
-                                                <input *ngIf="model.goshow" type="button" class="btn btn--primary" value="Go to Dashboard" name="dashboard" (click)="userCheck()"
+                                                <input *ngIf="model.goshow" type="button" class="btn btn--primary" value="Go to Portal" name="dashboard" (click)="userCheck()"
                                                       [disabled]="!userlogin.form.valid">
                                                 <input *ngIf="model.pwdshow" type="submit" class="btn btn--primary" value="Login" name="submit" [disabled]="!userlogin.form.valid">
 
@@ -57,7 +57,7 @@
                                                 <br>
                                                 <font color="red">
                                                       <b>
-                                                            <span *ngIf="model.msgshow">User doesn't exist. Please signup to use the dashboard.</span>
+                                                            <span *ngIf="model.msgshow">User doesn't exist. Please signup to use the portal.</span>
                                                       </b>
                                                 </font>
 

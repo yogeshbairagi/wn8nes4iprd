@@ -164,6 +164,111 @@ router.get('/getlinkbyid/:linkid', (req, res) => {
     });
 });
 
+// Get Trainings for approval
+router.get('/gettrainingforapproval/:catId/:status/:role', (req, res) => {
+
+    var catId = parseInt(req.params.catId);
+    var status = req.params.status;
+    var role = req.params.role;
+    var sql;
+
+    if (role == "Admin") {
+        sql = 'SELECT * FROM training WHERE category = ? AND status = ?';
+
+        connection.query(sql, [catId, status], function (err, result) {
+            if (err) {
+                sendError(err, res);
+            }
+            else {
+                sendResponse(result, res);
+            }
+        });
+    }
+    else {
+        sql = 'SELECT * FROM training WHERE status = ?';
+
+        connection.query(sql, [status], function (err, result) {
+            if (err) {
+                sendError(err, res);
+            }
+            else {
+                sendResponse(result, res);
+            }
+        });
+    }
+});
+
+// Get Trainings for approval by Category
+router.get('/gettrainingforapprovalcat/:catId/:status', (req, res) => {
+
+    var catId = parseInt(req.params.catId);
+    var status = req.params.status;
+    var sql = 'SELECT * FROM training WHERE category = ? AND status = ?';
+
+    connection.query(sql, [catId, status], function (err, result) {
+        if (err) {
+            sendError(err, res);
+        }
+        else {
+            sendResponse(result, res);
+        }
+    });
+});
+
+// Get Material for approval
+router.get('/getmaterialforapproval/:catId/:status/:role', (req, res) => {
+
+    var catId = parseInt(req.params.catId);
+    var status = req.params.status;
+    var role = req.params.role;
+    var sql;
+
+    if (role == "Admin") {
+        //sql = 'SELECT * FROM training WHERE category = ? AND status = ?';
+        sql = 'select material.matid, material.mattitle, material.matdesc, material.maturl, material.tid, material.mattype, material.status, material.addedby, material.approvedby, material.clickcount, training.category from material inner join training where material.tid = training.tid and material.status = ? and training.category = ?';
+
+        connection.query(sql, [status, catId], function (err, result) {
+            if (err) {
+                sendError(err, res);
+            }
+            else {
+                sendResponse(result, res);
+            }
+        });
+    }
+    else {
+        //sql = 'SELECT * FROM training WHERE status = ?';
+        sql = 'select material.matid, material.mattitle, material.matdesc, material.maturl, material.tid, material.mattype, material.status, material.addedby, material.approvedby, material.clickcount, training.category from material inner join training where material.tid = training.tid and material.status = ?';
+
+        connection.query(sql, [status], function (err, result) {
+            if (err) {
+                sendError(err, res);
+            }
+            else {
+                sendResponse(result, res);
+            }
+        });
+    }
+});
+
+// Get Material for approval by Category
+router.get('/getmaterialforapprovalcat/:catId/:status', (req, res) => {
+
+    var catId = parseInt(req.params.catId);
+    var status = req.params.status;
+    //var sql = 'SELECT * FROM training WHERE category = ? AND status = ?';
+    var sql = 'select material.matid, material.mattitle, material.matdesc, material.maturl, material.tid, material.mattype, material.status, material.addedby, material.approvedby, material.clickcount, training.category from material inner join training where material.tid = training.tid and material.status = ? and training.category = ?';
+
+    connection.query(sql, [status, catId], function (err, result) {
+        if (err) {
+            sendError(err, res);
+        }
+        else {
+            sendResponse(result, res);
+        }
+    });
+});
+
 // Get Links for approval
 router.get('/getlinksforapproval/:catId/:status/:role', (req, res) => {
 
@@ -250,13 +355,14 @@ router.get('/getlinkbycat/:category/:type/:userId/:status', (req, res) => {
 });
 
 // Get Training by Category
-router.get('/training/:category', (req, res) => {
+router.get('/training/:category/:status', (req, res) => {
 
     var category = parseInt(req.params.category);
+    var status = req.params.status; 
 
-    var sql = 'SELECT * FROM training WHERE category = ?';
+    var sql = 'SELECT * FROM training WHERE category = ? AND status = ?';
 
-    connection.query(sql, [category], function (err, result) {
+    connection.query(sql, [category, status], function (err, result) {
         if (err) {
             sendError(err, res);
         }
@@ -267,18 +373,20 @@ router.get('/training/:category', (req, res) => {
 });
 
 // Get Material by Category
-router.get('/getmaterial/:category/:userId', (req, res) => {
+router.get('/getmaterial/:category/:userId/:status', (req, res) => {
 
     var category = parseInt(req.params.category);
     var userId = req.params.userId;
+    var status = req.params.status;
 
     //var sql = 'SELECT training.tid, training.title, training.tdesc, material.matid, material.mattitle, material.matdesc, material.maturl, material.mattype FROM training inner join material where training.tid = material.tid and training.category = ? order by training.title, material.mattype, material.mattitle';
     if (category === 1) {
         //var sql = 'SELECT mat.tid, mat.title, mat.tdesc, mat.matid, mat.mattitle, mat.matdesc, mat.maturl, mat.mattype, favoritematerial.userId FROM (SELECT training.tid, training.title, training.tdesc, material.matid, material.mattitle, material.matdesc, material.maturl, material.mattype FROM training inner join material where training.tid = material.tid and training.category = ? order by training.title, material.mattype, material.mattitle) AS mat INNER JOIN favoritematerial ON mat.matid = favoritematerial.matid WHERE userId = ?';
 
-        var sql = 'SELECT training.tid, training.title, training.tdesc, mat.matid, mat.mattitle, mat.matdesc, mat.maturl, mat.mattype, mat.userId FROM training inner join (SELECT material.matid, material.mattitle, material.matdesc, material.maturl, material.tid, material.mattype, favoritematerial.userId from material inner join favoritematerial where material.matid = favoritematerial.matid and favoritematerial.userId = ?) as mat where training.tid = mat.tid ORDER BY training.title, mat.mattype, mat.mattitle';
+        //var sql = 'SELECT training.tid, training.title, training.tdesc, mat.matid, mat.mattitle, mat.matdesc, mat.maturl, mat.mattype, mat.userId FROM training inner join (SELECT material.matid, material.mattitle, material.matdesc, material.maturl, material.tid, material.mattype, favoritematerial.userId from material inner join favoritematerial where material.matid = favoritematerial.matid and favoritematerial.userId = ?) as mat where training.tid = mat.tid ORDER BY training.title, mat.mattype, mat.mattitle';
+        var sql = 'SELECT training.tid, training.title, training.tdesc, mat.matid, mat.mattitle, mat.matdesc, mat.maturl, mat.mattype, mat.userId FROM training inner join (SELECT material.matid, material.mattitle, material.matdesc, material.maturl, material.tid, material.mattype, favoritematerial.userId from material inner join favoritematerial where material.matid = favoritematerial.matid and favoritematerial.userId = ? and material.status = ?) as mat where training.tid = mat.tid ORDER BY training.title, mat.mattype, mat.mattitle';
 
-        connection.query(sql, [userId], function (err, result) {
+        connection.query(sql, [userId, status], function (err, result) {
             if (err) {
                 sendError(err, res);
             }
@@ -288,9 +396,10 @@ router.get('/getmaterial/:category/:userId', (req, res) => {
         });
     }
     else {
-        var sql = 'SELECT mat.tid, mat.title, mat.tdesc, mat.matid, mat.mattitle, mat.matdesc, mat.maturl, mat.mattype, favoritematerial.userId FROM (SELECT training.tid, training.title, training.tdesc, material.matid, material.mattitle, material.matdesc, material.maturl, material.mattype FROM training inner join material where training.tid = material.tid and training.category = ? order by training.title, material.mattype, material.mattitle) AS mat LEFT JOIN (SELECT * FROM favoritematerial where userId = ?) AS favoritematerial ON mat.matid = favoritematerial.matid';
+        //var sql = 'SELECT mat.tid, mat.title, mat.tdesc, mat.matid, mat.mattitle, mat.matdesc, mat.maturl, mat.mattype, favoritematerial.userId FROM (SELECT training.tid, training.title, training.tdesc, material.matid, material.mattitle, material.matdesc, material.maturl, material.mattype FROM training inner join material where training.tid = material.tid and training.category = ? order by training.title, material.mattype, material.mattitle) AS mat LEFT JOIN (SELECT * FROM favoritematerial where userId = ?) AS favoritematerial ON mat.matid = favoritematerial.matid';
+        var sql = 'SELECT mat.tid, mat.title, mat.tdesc, mat.matid, mat.mattitle, mat.matdesc, mat.maturl, mat.mattype, mat.status, favoritematerial.userId FROM (SELECT training.tid, training.title, training.tdesc, material.matid, material.mattitle, material.matdesc, material.maturl, material.mattype, material.status FROM training inner join material where training.tid = material.tid and training.category = ? and material.status = ? order by training.title, material.mattype, material.mattitle) AS mat LEFT JOIN (SELECT * FROM favoritematerial where userId = ?) AS favoritematerial ON mat.matid = favoritematerial.matid';
 
-        connection.query(sql, [category, userId], function (err, result) {
+        connection.query(sql, [category, status, userId], function (err, result) {
             if (err) {
                 sendError(err, res);
             }
@@ -393,10 +502,13 @@ router.post('/addtraining', (req, res) => {
     var title = req.body.title;
     var desc = req.body.desc;
     var category = req.body.category;
+    var status = req.body.status;
+    var addedby = req.body.addedby;
+    var approvedby = req.body.approvedby;
 
-    var sql = 'INSERT INTO training (title, category, tdesc) VALUES (?,?,?)';
+    var sql = 'INSERT INTO training (title, category, tdesc, status, addedby, approvedby) VALUES (?,?,?,?,?,?)';
 
-    connection.query(sql, [title, category, desc], function (err, result) {
+    connection.query(sql, [title, category, desc, status, addedby, approvedby], function (err, result) {
         if (err) {
             sendError(err, res);
         }
@@ -413,10 +525,10 @@ router.post('/addmaterial', (req, res) => {
     var records = [];
 
     for (var i = 0; i < materialList.length; i++) {
-        records.push([materialList[i].mattitle, materialList[i].matdesc, materialList[i].maturl, materialList[i].tid, materialList[i].mattype]);
+        records.push([materialList[i].mattitle, materialList[i].matdesc, materialList[i].maturl, materialList[i].tid, materialList[i].mattype, materialList[i].status, materialList[i].addedby, materialList[i].approvedby]);
     }
 
-    var sql = 'INSERT INTO material (mattitle, matdesc, maturl, tid, mattype) VALUES ?';
+    var sql = 'INSERT INTO material (mattitle, matdesc, maturl, tid, mattype, status, addedby, approvedby) VALUES ?';
 
     connection.query(sql, [records], function (err, result) {
         if (err) {
@@ -551,6 +663,44 @@ router.get('/approvelinks/:linkid/:approvedby', (req, res) => {
     });
 });
 
+//approve Training
+router.get('/approvetraining/:tid/:approvedby', (req, res) => {
+
+    var tid = req.params.tid;
+    var status = "Approved";
+    var approvedby = req.params.approvedby;
+
+    var sql = 'UPDATE training SET status=?, approvedby=? WHERE tid=?';
+
+    connection.query(sql, [status, approvedby, tid], function (err, result) {
+        if (err) {
+            sendError(err, res);
+        }
+        else {
+            sendResponse(result, res);
+        }
+    });
+});
+
+//approve Material
+router.get('/approvematerial/:matid/:approvedby', (req, res) => {
+
+    var matid = req.params.matid;
+    var status = "Approved";
+    var approvedby = req.params.approvedby;
+
+    var sql = 'UPDATE material SET status=?, approvedby=? WHERE matid=?';
+
+    connection.query(sql, [status, approvedby, matid], function (err, result) {
+        if (err) {
+            sendError(err, res);
+        }
+        else {
+            sendResponse(result, res);
+        }
+    });
+});
+
 //Update dashboard
 router.post('/updatedashboard', (req, res) => {
     var dashId = req.body.dashId;
@@ -603,6 +753,40 @@ router.get('/deletelinks/:linkid', (req, res) => {
     var sql = 'DELETE FROM dashboard WHERE linkid=?';
 
     connection.query(sql, [linkid], function (err, result) {
+        if (err) {
+            sendError(err, res);
+        }
+        else {
+            sendResponse(result, res);
+        }
+    });
+});
+
+//delete trainings
+router.get('/deletetraining/:tid', (req, res) => {
+
+    var tid = req.params.tid;
+
+    var sql = 'DELETE FROM training WHERE tid=?';
+
+    connection.query(sql, [tid], function (err, result) {
+        if (err) {
+            sendError(err, res);
+        }
+        else {
+            sendResponse(result, res);
+        }
+    });
+});
+
+//delete material
+router.get('/deletematerial/:matid', (req, res) => {
+
+    var matid = req.params.matid;
+
+    var sql = 'DELETE FROM material WHERE matid=?';
+
+    connection.query(sql, [matid], function (err, result) {
         if (err) {
             sendError(err, res);
         }

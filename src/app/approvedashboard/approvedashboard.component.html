@@ -1,7 +1,7 @@
 <div class="section">
   <div>
     <h4>List of Dashboard's Add requests</h4>
-    <br *ngIf="dashboardList.length == 0">
+    <br>
     <div *ngIf="isSuper">
       <label for="category">Filter by Role: </label>
       <select name="category" [(ngModel)]="category" (change)="onCategoryChange()">

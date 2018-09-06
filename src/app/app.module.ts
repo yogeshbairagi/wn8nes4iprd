@@ -27,6 +27,8 @@ import { AddMaterialComponent } from './add-material/add-material.component';
 import { UserComponent } from './user/user.component';
 import { DeletecategoryComponent } from './deletecategory/deletecategory.component';
 import { ApprovelinksComponent } from './approvelinks/approvelinks.component';
+import { ApprovetrainingComponent } from './approvetraining/approvetraining.component';
+import { ApprovematerialComponent } from './approvematerial/approvematerial.component';
 
 const appRoutes: Routes = [
   {
@@ -94,6 +96,14 @@ const appRoutes: Routes = [
       {
         path: 'addmaterial',
         component: AddMaterialComponent
+      },
+      {
+        path: 'approvetraining',
+        component: ApprovetrainingComponent
+      },
+      {
+        path: 'approvematerial',
+        component: ApprovematerialComponent
       }
     ]
   },
@@ -145,7 +155,9 @@ const appRoutes: Routes = [
     AddMaterialComponent,
     UserComponent,
     DeletecategoryComponent,
-    ApprovelinksComponent
+    ApprovelinksComponent,
+    ApprovetrainingComponent,
+    ApprovematerialComponent
   ],
   imports: [
     BrowserModule,

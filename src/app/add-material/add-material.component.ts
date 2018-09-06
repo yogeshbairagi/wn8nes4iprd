@@ -16,7 +16,7 @@ export class AddMaterialComponent implements OnInit {
   trainingList: any = [];
   category: string = null;
   training: string = null;
-  materialList: any = [new AddMaterial(null, null, null, null,"Document")];
+  materialList: any = [new AddMaterial(null, null, null, null,"Document", null, null, null)];
 
   constructor(private _dataService: DataService) { }
 
@@ -36,6 +36,16 @@ export class AddMaterialComponent implements OnInit {
     for(var i=0; i<this.materialList.length; i++)
     {
       this.materialList[i].tid = this.training;
+
+      if (sessionStorage.getItem("role") == "User") { 
+        this.materialList[i].status = "Pending";
+        this.materialList[i].addedby = sessionStorage.getItem("userId");
+      }
+      else { 
+        this.materialList[i].status = "Approved";
+        this.materialList[i].addedby = sessionStorage.getItem("userId");
+        this.materialList[i].approvedby = sessionStorage.getItem("userId");
+      }
     }
     
     this._dataService.addMaterial(this.materialList)
@@ -43,7 +53,7 @@ export class AddMaterialComponent implements OnInit {
         if (res.status !== 501) {
           this.training = null;
           this.category = null;
-          this.materialList = [new AddMaterial(null, null, null, null,"Document")];
+          this.materialList = [new AddMaterial(null, null, null, null,"Document", null, null, null)];
           alert("Training material added successfully.");
         }
         else
@@ -52,7 +62,7 @@ export class AddMaterialComponent implements OnInit {
   }
 
   onCategoryChange() {
-    this._dataService.getTraining(this.category)
+    this._dataService.getTraining(this.category, "Approved")
       .subscribe(res => {
         if (res.status !== 501) {
           this.trainingList = res.data;
@@ -63,7 +73,7 @@ export class AddMaterialComponent implements OnInit {
   }
 
   addRow() {
-    this.materialList.push(new AddMaterial(null, null, null, null,"Document"));
+    this.materialList.push(new AddMaterial(null, null, null, null,"Document", null, null, null));
   }
 
   deleteRow(index) {
